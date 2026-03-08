@@ -11,238 +11,335 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg:#0A1628;--bg2:#060E1A;--card:rgba(15,25,50,0.75);
-  --gold:#C9A84C;--gold-dim:rgba(201,168,76,0.25);--gold-glow:rgba(201,168,76,0.12);
-  --cyan:#00D4FF;--cyan-dim:rgba(0,212,255,0.15);
-  --white:#E8ECF1;--dim:rgba(232,236,241,0.45);
-  --red:#FF4D4D;--green:#34D399;--yellow:#FBBF24;
-  --mono:'JetBrains Mono','Courier New',monospace;
-  --sans:'Outfit',-apple-system,sans-serif;
-}
+:root{--bg:#0A1628;--bg2:#060E1A;--card:rgba(15,25,50,0.75);--gold:#C9A84C;--gold-dim:rgba(201,168,76,0.25);--gold-glow:rgba(201,168,76,0.12);--cyan:#00D4FF;--cyan-dim:rgba(0,212,255,0.15);--white:#E8ECF1;--dim:rgba(232,236,241,0.45);--red:#FF4D4D;--green:#34D399;--yellow:#FBBF24;--mono:'JetBrains Mono','Courier New',monospace;--sans:'Outfit',-apple-system,sans-serif}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{height:100%;-webkit-text-size-adjust:100%}
-body{
-  font-family:var(--sans);background:linear-gradient(180deg,var(--bg) 0%,var(--bg2) 100%);
-  color:var(--white);min-height:100vh;min-height:100dvh;overflow-x:hidden;-webkit-font-smoothing:antialiased;
-}
-body::before{
-  content:'';position:fixed;inset:0;opacity:0.025;pointer-events:none;z-index:0;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-}
+body{font-family:var(--sans);background:linear-gradient(180deg,var(--bg) 0%,var(--bg2) 100%);color:var(--white);min-height:100vh;min-height:100dvh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+body::before{content:'';position:fixed;inset:0;opacity:0.025;pointer-events:none;z-index:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
 #app{max-width:430px;margin:0 auto;padding:0 14px 88px;position:relative;z-index:1}
-.header{text-align:center;padding:20px 0 6px}
-.header .title{margin-top:8px;font-size:19px;font-weight:700;color:var(--gold);letter-spacing:3.5px;text-transform:uppercase}
-.header .sub{font-size:10px;color:var(--dim);letter-spacing:2.5px;margin-top:3px}
-.demo-badge{display:none;background:rgba(251,191,36,0.15);color:var(--yellow);font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:3px 10px;border-radius:10px;border:1px solid rgba(251,191,36,0.3);margin-left:8px;vertical-align:middle}
-.demo-badge.show{display:inline-block}
-.mode-bar{display:flex;justify-content:center;margin:10px 0 6px;gap:0}
-.mode-btn{font-family:var(--sans);font-size:11px;font-weight:600;padding:7px 18px;border:1px solid var(--gold-dim);background:transparent;color:var(--dim);cursor:pointer;letter-spacing:1px;transition:all 0.3s;-webkit-tap-highlight-color:transparent}
-.mode-btn:first-child{border-radius:20px 0 0 20px}
-.mode-btn:last-child{border-radius:0 20px 20px 0}
-.mode-btn.active{background:rgba(201,168,76,0.15);color:var(--gold);border-color:var(--gold)}
-.card{background:var(--card);border:1px solid var(--gold-dim);border-radius:18px;padding:16px 18px;margin-bottom:14px;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:0 4px 30px rgba(0,0,0,0.45),inset 0 1px 0 var(--gold-glow)}
-.card-label{display:flex;align-items:center;gap:7px;margin-bottom:12px;font-size:11px;font-weight:600;color:var(--gold);letter-spacing:2.2px;text-transform:uppercase}
-.mono{font-family:var(--mono)}.big-num{font-size:28px;font-weight:700;line-height:1.2}
-.med-num{font-size:17px;font-weight:700;line-height:1.6}.sm-num{font-size:11px;color:var(--dim)}
-.unit{font-size:14px;color:var(--dim);margin-left:4px;font-weight:400}
-.row{display:flex;align-items:center}.center{justify-content:center;align-items:center}.gap16{gap:16px}.gap24{gap:24px}.mt8{margin-top:8px}.mt10{margin-top:10px}
-.stat-box{text-align:center}.stat-label{font-size:10px;color:var(--dim);margin-bottom:2px}
-.stat-val{font-family:var(--mono);font-size:15px;font-weight:700}.stat-val.cyan{color:var(--cyan)}.stat-val.gold{color:var(--gold)}
-.spark-label{font-size:9px;color:var(--dim);margin-bottom:3px}
-.copy-toast{position:absolute;top:0;right:0;font-size:10px;color:var(--green);font-weight:600;opacity:0;transition:opacity 0.3s}
-.copy-toast.show{opacity:1}
-.pos-data{cursor:pointer;position:relative;-webkit-tap-highlight-color:transparent}
-.status-bar{position:fixed;bottom:0;left:0;right:0;background:rgba(10,22,40,0.95);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-top:1px solid var(--gold-dim);padding:9px 18px;display:flex;justify-content:space-between;align-items:center;max-width:430px;margin:0 auto;z-index:10;padding-bottom:max(9px,env(safe-area-inset-bottom))}
-.accuracy-dot{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:5px}
-.status-text{font-size:10px;color:var(--dim)}
-.screen-loader{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:55vh;gap:22px}
-.screen-loader .msg{color:var(--gold);font-size:15px;letter-spacing:1px;text-align:center}
-.screen-loader .hint{color:var(--dim);font-size:11px;max-width:280px;text-align:center;line-height:1.7}
-.help-card{background:rgba(0,212,255,0.06);border:1px solid rgba(0,212,255,0.15);border-radius:14px;padding:14px 16px;margin:10px 0 14px}
-.help-card h3{font-size:13px;color:var(--cyan);margin-bottom:8px;font-weight:600}
-.help-card p,.help-card li{font-size:11px;color:var(--dim);line-height:1.7}
-.help-card ol{padding-left:18px;margin:6px 0}.help-card li{margin-bottom:4px}
-.help-card .retry-btn{display:inline-block;margin-top:10px;padding:8px 20px;background:rgba(0,212,255,0.12);border:1px solid rgba(0,212,255,0.3);border-radius:10px;color:var(--cyan);font-size:12px;font-weight:600;cursor:pointer;font-family:var(--sans);border-style:solid}
-@keyframes sweep{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-.radar-sweep{animation:sweep 2s linear infinite;transform-origin:60px 60px}
-.compass-ring{transition:transform 0.5s ease-out}
-@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-.card{animation:fadeUp 0.5s ease-out both}
-.card:nth-child(1){animation-delay:0.05s}.card:nth-child(2){animation-delay:0.1s}.card:nth-child(3){animation-delay:0.15s}.card:nth-child(4){animation-delay:0.2s}
+.hdr{text-align:center;padding:20px 0 6px}
+.hdr .t{margin-top:8px;font-size:19px;font-weight:700;color:var(--gold);letter-spacing:3.5px;text-transform:uppercase}
+.hdr .s{font-size:10px;color:var(--dim);letter-spacing:2.5px;margin-top:3px}
+.dbadge{display:none;background:rgba(251,191,36,0.15);color:var(--yellow);font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:3px 10px;border-radius:10px;border:1px solid rgba(251,191,36,0.3);margin-left:8px;vertical-align:middle}
+.dbadge.on{display:inline-block}
+.mbar{display:flex;justify-content:center;margin:10px 0 6px}
+.mbtn{font-family:var(--sans);font-size:11px;font-weight:600;padding:7px 18px;border:1px solid var(--gold-dim);background:transparent;color:var(--dim);cursor:pointer;letter-spacing:1px;transition:all .3s;-webkit-tap-highlight-color:transparent}
+.mbtn:first-child{border-radius:20px 0 0 20px}.mbtn:last-child{border-radius:0 20px 20px 0}
+.mbtn.on{background:rgba(201,168,76,0.15);color:var(--gold);border-color:var(--gold)}
+.crd{background:var(--card);border:1px solid var(--gold-dim);border-radius:18px;padding:16px 18px;margin-bottom:14px;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:0 4px 30px rgba(0,0,0,.45),inset 0 1px 0 var(--gold-glow);animation:fu .5s ease-out both}
+.crd:nth-child(1){animation-delay:.05s}.crd:nth-child(2){animation-delay:.1s}.crd:nth-child(3){animation-delay:.15s}.crd:nth-child(4){animation-delay:.2s}
+.cl{display:flex;align-items:center;gap:7px;margin-bottom:12px;font-size:11px;font-weight:600;color:var(--gold);letter-spacing:2.2px;text-transform:uppercase}
+.mn{font-family:var(--mono)}.bn{font-size:28px;font-weight:700;line-height:1.2}
+.mn17{font-family:var(--mono);font-size:17px;font-weight:700;line-height:1.6}
+.sm{font-size:11px;color:var(--dim)}.ut{font-size:14px;color:var(--dim);margin-left:4px;font-weight:400}
+.rw{display:flex;align-items:center}.ct{justify-content:center;align-items:center}.g16{gap:16px}.g24{gap:24px}
+.sb{text-align:center}.sl{font-size:10px;color:var(--dim);margin-bottom:2px}
+.sv{font-family:var(--mono);font-size:15px;font-weight:700}.sv.cy{color:var(--cyan)}.sv.gd{color:var(--gold)}
+.skl{font-size:9px;color:var(--dim);margin-bottom:3px}
+.ct2{position:absolute;top:0;right:0;font-size:10px;color:var(--green);font-weight:600;opacity:0;transition:opacity .3s}.ct2.on{opacity:1}
+.pd{cursor:pointer;position:relative;-webkit-tap-highlight-color:transparent}
+.bar{position:fixed;bottom:0;left:0;right:0;background:rgba(10,22,40,.95);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-top:1px solid var(--gold-dim);padding:9px 18px;display:flex;justify-content:space-between;align-items:center;max-width:430px;margin:0 auto;z-index:10;padding-bottom:max(9px,env(safe-area-inset-bottom))}
+.adot{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:5px}
+.stx{font-size:10px;color:var(--dim)}
+.lw{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:55vh;gap:22px}
+.lw .lm{color:var(--gold);font-size:15px;letter-spacing:1px;text-align:center}
+.lw .lh{color:var(--dim);font-size:11px;max-width:280px;text-align:center;line-height:1.7}
+.hc{background:rgba(0,212,255,.06);border:1px solid rgba(0,212,255,.15);border-radius:14px;padding:14px 16px;margin:10px 0 14px}
+.hc h3{font-size:13px;color:var(--cyan);margin-bottom:8px;font-weight:600}
+.hc p,.hc li{font-size:11px;color:var(--dim);line-height:1.7}
+.hc ol{padding-left:18px;margin:6px 0}.hc li{margin-bottom:4px}
+.hc .rb{display:inline-block;margin-top:10px;padding:8px 20px;background:rgba(0,212,255,.12);border:1px solid rgba(0,212,255,.3);border-radius:10px;color:var(--cyan);font-size:12px;font-weight:600;cursor:pointer;font-family:var(--sans)}
+@keyframes sw{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.rsw{animation:sw 2s linear infinite;transform-origin:60px 60px}
+.cr{transition:transform .5s ease-out}
+@keyframes fu{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+/* Speed gauge needle smooth transition */
+#spdNeedle{transition:transform .6s ease-out}
+#spdArc{transition:d .6s ease-out}
+/* Alt gauge clip smooth transition */
+#altClipRect{transition:y .8s ease-out,height .8s ease-out}
 </style>
 </head>
 <body>
 <div id="app">
 
-<div class="header">
-  <svg width="74" height="74" viewBox="0 0 100 100" style="filter:drop-shadow(0 0 14px rgba(201,168,76,0.45))">
-    <defs><radialGradient id="iBg" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#162240"/><stop offset="100%" stop-color="#0A1628"/></radialGradient>
-    <linearGradient id="iG" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#E0C060"/><stop offset="100%" stop-color="#A08030"/></linearGradient></defs>
-    <circle cx="50" cy="50" r="48" fill="url(#iBg)" stroke="url(#iG)" stroke-width="2.5"/>
-    <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(201,168,76,0.25)" stroke-width="0.5"/>
-    <line x1="50" y1="8" x2="50" y2="16" stroke="#C9A84C" stroke-width="1.5"/>
-    <line x1="50" y1="84" x2="50" y2="92" stroke="#C9A84C" stroke-width="0.5" opacity="0.4"/>
-    <line x1="8" y1="50" x2="16" y2="50" stroke="#C9A84C" stroke-width="0.5" opacity="0.4"/>
-    <line x1="84" y1="50" x2="92" y2="50" stroke="#C9A84C" stroke-width="0.5" opacity="0.4"/>
-    <text x="50" y="22" text-anchor="middle" fill="#FF4D4D" font-size="7" font-weight="700" font-family="sans-serif">N</text>
-    <text x="50" y="82" text-anchor="middle" fill="#C9A84C" font-size="7" font-weight="700" font-family="sans-serif">S</text>
-    <text x="22" y="53" text-anchor="middle" fill="#C9A84C" font-size="7" font-weight="700" font-family="sans-serif">W</text>
-    <text x="78" y="53" text-anchor="middle" fill="#C9A84C" font-size="7" font-weight="700" font-family="sans-serif">E</text>
-    <polygon points="50,14 46,26 54,26" fill="#FF4D4D" opacity="0.9"><animateTransform attributeName="transform" type="rotate" values="0 50 50;360 50 50" dur="60s" repeatCount="indefinite"/></polygon>
-    <text x="50" y="53" text-anchor="middle" dominant-baseline="central" fill="#C9A84C" font-size="16" font-weight="800" font-family="Georgia,serif" letter-spacing="1">TW</text>
-  </svg>
-  <div class="title">TW Navigator<span class="demo-badge" id="demoBadge">Demo</span></div>
-  <div class="sub">Maritime Precision Instruments</div>
+<!-- HEADER -->
+<div class="hdr">
+<svg width="74" height="74" viewBox="0 0 100 100" style="filter:drop-shadow(0 0 14px rgba(201,168,76,.45))">
+<defs><radialGradient id="iBg" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#162240"/><stop offset="100%" stop-color="#0A1628"/></radialGradient><linearGradient id="iG" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#E0C060"/><stop offset="100%" stop-color="#A08030"/></linearGradient></defs>
+<circle cx="50" cy="50" r="48" fill="url(#iBg)" stroke="url(#iG)" stroke-width="2.5"/><circle cx="50" cy="50" r="42" fill="none" stroke="rgba(201,168,76,.25)" stroke-width=".5"/>
+<line x1="50" y1="8" x2="50" y2="16" stroke="#C9A84C" stroke-width="1.5"/><line x1="50" y1="84" x2="50" y2="92" stroke="#C9A84C" stroke-width=".5" opacity=".4"/><line x1="8" y1="50" x2="16" y2="50" stroke="#C9A84C" stroke-width=".5" opacity=".4"/><line x1="84" y1="50" x2="92" y2="50" stroke="#C9A84C" stroke-width=".5" opacity=".4"/>
+<text x="50" y="22" text-anchor="middle" fill="#FF4D4D" font-size="7" font-weight="700">N</text><text x="50" y="82" text-anchor="middle" fill="#C9A84C" font-size="7" font-weight="700">S</text><text x="22" y="53" text-anchor="middle" fill="#C9A84C" font-size="7" font-weight="700">W</text><text x="78" y="53" text-anchor="middle" fill="#C9A84C" font-size="7" font-weight="700">E</text>
+<polygon points="50,14 46,26 54,26" fill="#FF4D4D" opacity=".9"><animateTransform attributeName="transform" type="rotate" values="0 50 50;360 50 50" dur="60s" repeatCount="indefinite"/></polygon>
+<text x="50" y="53" text-anchor="middle" dominant-baseline="central" fill="#C9A84C" font-size="16" font-weight="800" font-family="Georgia,serif" letter-spacing="1">TW</text>
+</svg>
+<div class="t">TW Navigator<span class="dbadge" id="dBadge">Demo</span></div>
+<div class="s">Maritime Precision Instruments</div>
 </div>
 
-<div class="mode-bar">
-  <button class="mode-btn active" id="btnLive" onclick="switchMode('live')">📡 LIVE GPS</button>
-  <button class="mode-btn" id="btnDemo" onclick="switchMode('demo')">🎮 DEMO</button>
+<!-- MODE -->
+<div class="mbar">
+<button class="mbtn on" id="bLive" onclick="sw('live')">📡 LIVE GPS</button>
+<button class="mbtn" id="bDemo" onclick="sw('demo')">🎮 DEMO</button>
 </div>
 
-<div id="loaderScreen">
-  <div class="screen-loader">
-    <svg width="120" height="120" viewBox="0 0 120 120">
-      <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(201,168,76,0.25)" stroke-width="1"/>
-      <circle cx="60" cy="60" r="35" fill="none" stroke="rgba(201,168,76,0.25)" stroke-width="0.5"/>
-      <circle cx="60" cy="60" r="20" fill="none" stroke="rgba(201,168,76,0.25)" stroke-width="0.5"/>
-      <circle cx="60" cy="60" r="2" fill="#C9A84C"/>
-      <g class="radar-sweep"><line x1="60" y1="60" x2="60" y2="10" stroke="#00D4FF" stroke-width="1.5" opacity="0.8"/>
-        <path d="M60,60 L60,10 A50,50 0 0,1 95,25 Z" fill="rgba(0,212,255,0.15)" opacity="0.35"/></g>
-    </svg>
-    <div class="msg" id="loaderMsg">GPS-Signal wird gesucht…</div>
-    <div class="hint">Tippe auf <b>🎮 DEMO</b> um die App mit simulierten Daten zu testen.</div>
-  </div>
-  <div id="helpCard" style="display:none"></div>
+<!-- LOADER -->
+<div id="LS">
+<div class="lw">
+<svg width="120" height="120" viewBox="0 0 120 120"><circle cx="60" cy="60" r="50" fill="none" stroke="rgba(201,168,76,.25)" stroke-width="1"/><circle cx="60" cy="60" r="35" fill="none" stroke="rgba(201,168,76,.25)" stroke-width=".5"/><circle cx="60" cy="60" r="20" fill="none" stroke="rgba(201,168,76,.25)" stroke-width=".5"/><circle cx="60" cy="60" r="2" fill="#C9A84C"/><g class="rsw"><line x1="60" y1="60" x2="60" y2="10" stroke="#00D4FF" stroke-width="1.5" opacity=".8"/><path d="M60,60 L60,10 A50,50 0 0,1 95,25 Z" fill="rgba(0,212,255,.15)" opacity=".35"/></g></svg>
+<div class="lm" id="lMsg">GPS-Signal wird gesucht…</div>
+<div class="lh">Tippe auf <b>🎮 DEMO</b> um die App mit simulierten Daten zu testen.</div>
+</div>
+<div id="hCard" style="display:none"></div>
 </div>
 
-<div id="dashboardScreen" style="display:none">
-  <div class="card">
-    <div class="card-label"><span>📍</span> Position</div>
-    <div class="pos-data" id="posData">
-      <div class="mono med-num" id="latDMS">—</div>
-      <div class="mono med-num" id="lonDMS">—</div>
-      <div class="mono sm-num" style="margin-top:3px" id="latLonDec">—</div>
-      <div class="copy-toast" id="copyToast">✓ Kopiert</div>
-    </div>
-    <div class="mt10" id="posGrid"></div>
-  </div>
-  <div class="card">
-    <div class="card-label"><span>🚀</span> Geschwindigkeit</div>
-    <div id="speedGauge"></div>
-    <div class="row center gap24 mt8">
-      <div class="stat-box"><div class="stat-label">Knoten</div><div class="stat-val cyan" id="valKnots">0.0 kn</div></div>
-      <div class="stat-box"><div class="stat-label">Max</div><div class="stat-val gold" id="valMaxSpd">0.0 km/h</div></div>
-      <div class="stat-box"><div class="stat-label">Ø</div><div class="stat-val" id="valAvgSpd">0.0 km/h</div></div>
-    </div>
-    <div class="mt10"><div class="spark-label">Geschwindigkeit (60s)</div><div id="sparkSpeed"></div></div>
-  </div>
-  <div class="card">
-    <div class="card-label"><span>📐</span> Höhe</div>
-    <div class="row gap16" style="align-items:center">
-      <div id="altGauge"></div>
-      <div>
-        <div class="mono big-num"><span id="valAltM">—</span><span class="unit">m ü. NHN</span></div>
-        <div class="mono sm-num" style="margin-top:5px">(<span id="valAltFt">—</span> ft)</div>
-      </div>
-    </div>
-    <div class="mt10"><div class="spark-label">Höhenverlauf (60s)</div><div id="sparkAlt"></div></div>
-  </div>
-  <div class="card">
-    <div class="card-label"><span>🧭</span> Kurs / Heading</div>
-    <div id="compassWrap"></div>
-    <div style="text-align:center;margin-top:8px">
-      <div class="mono big-num" id="valHdgDeg">—</div>
-      <div style="font-size:16px;font-weight:600;color:var(--cyan);margin-top:2px" id="valHdgTxt">Kein Kurs</div>
-    </div>
-  </div>
+<!-- DASHBOARD -->
+<div id="DS" style="display:none">
+
+<!-- POSITION -->
+<div class="crd"><div class="cl"><span>📍</span> Position</div>
+<div class="pd" id="pD"><div class="mn17" id="vLat">—</div><div class="mn17" id="vLon">—</div><div class="sm" style="margin-top:3px" id="vLL">—</div><div class="ct2" id="cToast">✓ Kopiert</div></div>
+<div style="margin-top:10px">
+<svg id="pgSvg" viewBox="0 0 160 120" style="width:100%;max-width:240px;display:block;margin:0 auto">
+<g id="pgGrid"></g>
+<line id="pgH" stroke="var(--cyan)" stroke-width=".6" opacity=".5"/>
+<line id="pgV" stroke="var(--cyan)" stroke-width=".6" opacity=".5"/>
+<circle id="pgC" fill="none" stroke="var(--cyan)" stroke-width=".5" opacity=".25" r="13"/>
+<circle id="pgP" fill="var(--cyan)" r="3"><animate attributeName="r" values="3;5.5;3" dur="2s" repeatCount="indefinite"/><animate attributeName="opacity" values="1;.3;1" dur="2s" repeatCount="indefinite"/></circle>
+<circle id="pgD" fill="white" r="2"/>
+<text id="pgT" fill="var(--cyan)" font-size="7" font-family="var(--mono)" opacity=".65"></text>
+</svg>
+</div></div>
+
+<!-- SPEED -->
+<div class="crd"><div class="cl"><span>🚀</span> Geschwindigkeit</div>
+<svg id="spdSvg" viewBox="0 0 180 130" style="width:100%;max-width:270px;display:block;margin:0 auto">
+<g id="spdBg"></g>
+<path id="spdArc" fill="none" stroke="var(--cyan)" stroke-width="14" stroke-linecap="round" style="filter:drop-shadow(0 0 7px var(--cyan))" d="M0,0"/>
+<g id="spdTicks"></g>
+<g id="spdNeedle"><polygon id="spdNPoly" fill="var(--gold)" style="filter:drop-shadow(0 0 4px var(--gold))"/></g>
+<circle cx="90" cy="90" r="5" fill="var(--bg)" stroke="var(--gold)" stroke-width="1.5"/>
+<text id="spdVal" x="90" y="118" text-anchor="middle" fill="var(--white)" font-size="21" font-weight="700" font-family="var(--mono)">0.0</text>
+<text x="90" y="128" text-anchor="middle" fill="var(--dim)" font-size="8" font-family="var(--sans)">km/h</text>
+</svg>
+<div class="rw ct g24" style="margin-top:8px">
+<div class="sb"><div class="sl">Knoten</div><div class="sv cy" id="vKn">0.0 kn</div></div>
+<div class="sb"><div class="sl">Max</div><div class="sv gd" id="vMx">0.0 km/h</div></div>
+<div class="sb"><div class="sl">Ø</div><div class="sv" id="vAv">0.0 km/h</div></div>
 </div>
+<div style="margin-top:10px"><div class="skl">Geschwindigkeit (60s)</div><canvas id="cSpd" height="40" style="width:100%;height:40px"></canvas></div>
 </div>
 
-<div class="status-bar">
-  <div id="statusLeft"></div>
-  <div class="status-text" id="statusTime">Warte auf GPS…</div>
+<!-- ALTITUDE -->
+<div class="crd"><div class="cl"><span>📐</span> Höhe</div>
+<div class="rw g16" style="align-items:center">
+<svg viewBox="0 0 60 140" style="height:130px">
+<defs><linearGradient id="aG" x1="0" y1="1" x2="0" y2="0"><stop offset="0%" stop-color="#1E40AF"/><stop offset="40%" stop-color="#059669"/><stop offset="80%" stop-color="#92400E"/><stop offset="100%" stop-color="#78350F"/></linearGradient>
+<clipPath id="aC"><rect id="altClipRect" x="15" y="130" width="30" height="0" rx="4"/></clipPath></defs>
+<rect x="15" y="10" width="30" height="120" rx="6" fill="rgba(255,255,255,.04)" stroke="var(--gold-dim)" stroke-width=".5"/>
+<rect x="15" y="10" width="30" height="120" rx="6" fill="url(#aG)" clip-path="url(#aC)"/>
+<line x1="46" y1="130" x2="50" y2="130" stroke="var(--dim)" stroke-width=".5"/><text x="54" y="130" dominant-baseline="central" fill="var(--dim)" font-size="6" font-family="var(--mono)">0</text>
+<line x1="46" y1="100" x2="50" y2="100" stroke="var(--dim)" stroke-width=".5"/><text x="54" y="100" dominant-baseline="central" fill="var(--dim)" font-size="6" font-family="var(--mono)">500</text>
+<line x1="46" y1="70" x2="50" y2="70" stroke="var(--dim)" stroke-width=".5"/><text x="54" y="70" dominant-baseline="central" fill="var(--dim)" font-size="6" font-family="var(--mono)">1000</text>
+<line x1="46" y1="40" x2="50" y2="40" stroke="var(--dim)" stroke-width=".5"/><text x="54" y="40" dominant-baseline="central" fill="var(--dim)" font-size="6" font-family="var(--mono)">1500</text>
+<line x1="46" y1="10" x2="50" y2="10" stroke="var(--dim)" stroke-width=".5"/><text x="54" y="10" dominant-baseline="central" fill="var(--dim)" font-size="6" font-family="var(--mono)">2000</text>
+<text x="30" y="138" text-anchor="middle" fill="var(--dim)" font-size="7">m</text>
+</svg>
+<div><div class="mn bn"><span id="vAm">—</span><span class="ut">m ü. NHN</span></div><div class="sm" style="margin-top:5px">(<span id="vAf">—</span> ft)</div></div>
 </div>
+<div style="margin-top:10px"><div class="skl">Höhenverlauf (60s)</div><canvas id="cAlt" height="40" style="width:100%;height:40px"></canvas></div>
+</div>
+
+<!-- COMPASS -->
+<div class="crd"><div class="cl"><span>🧭</span> Kurs / Heading</div>
+<svg id="compSvg" viewBox="0 0 200 200" style="width:100%;max-width:230px;display:block;margin:0 auto">
+<circle cx="100" cy="100" r="92" fill="none" stroke="var(--gold-dim)" stroke-width="1"/>
+<circle cx="100" cy="100" r="80" fill="rgba(10,22,40,.6)" stroke="rgba(255,255,255,.04)" stroke-width=".5"/>
+<g class="cr" id="compRing"></g>
+<polygon points="100,12 96,4 104,4" fill="var(--cyan)" style="filter:drop-shadow(0 0 5px var(--cyan))"/>
+<circle cx="100" cy="100" r="3" fill="var(--gold)"/>
+</svg>
+<div style="text-align:center;margin-top:8px"><div class="mn bn" id="vHd">—</div><div style="font-size:16px;font-weight:600;color:var(--cyan);margin-top:2px" id="vHt">Kein Kurs</div></div>
+</div>
+
+</div><!-- /DS -->
+</div><!-- /app -->
+
+<div class="bar"><div id="stL"></div><div class="stx" id="stT">Warte auf GPS…</div></div>
 
 <script>
-const HIST=60,$=id=>document.getElementById(id);
-let mode='live',gps=null,lastUpdate=null,speedHist=[],altHist=[],maxSpd=0,spdSum=0,spdCount=0,smoothHdg=0,watchId=null,demoIv=null,demoT=0;
+// ═══════════════════════════════════════════════════════════
+// TW NAV v4 – ZERO FLICKER (persistent DOM, canvas sparklines)
+// ═══════════════════════════════════════════════════════════
 
-const toKmh=s=>(s||0)*3.6,toKn=s=>(s||0)*1.94384,toFt=m=>(m||0)*3.28084,clamp=(v,lo,hi)=>Math.min(Math.max(v,lo),hi);
-function toDMS(d,isL){const a=Math.abs(d),dg=Math.floor(a),mf=(a-dg)*60,m=Math.floor(mf),s=((mf-m)*60).toFixed(1);return`${isL?(d>=0?'N':'S'):(d>=0?'E':'W')} ${dg}° ${String(m).padStart(2,'0')}' ${s.padStart(4,'0')}"` }
-function hdgTxt(d){if(d==null)return'—';const a=['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'];return a[Math.round(((d%360+360)%360)/22.5)%16]}
-function shortRot(f,t){return f+((t-f+540)%360)-180}
+const H=60,$=id=>document.getElementById(id);
+const clamp=(v,a,b)=>Math.min(Math.max(v,a),b);
+const toKmh=s=>(s||0)*3.6,toKn=s=>(s||0)*1.94384,toFt=m=>(m||0)*3.28084;
+function toDMS(d,l){const a=Math.abs(d),dg=Math.floor(a),mf=(a-dg)*60,m=Math.floor(mf),s=((mf-m)*60).toFixed(1);return`${l?(d>=0?'N':'S'):(d>=0?'E':'W')} ${dg}° ${String(m).padStart(2,'0')}' ${s.padStart(4,'0')}"` }
+function hTxt(d){if(d==null)return'—';const a=['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'];return a[Math.round(((d%360+360)%360)/22.5)%16]}
+function sRot(f,t){return f+((t-f+540)%360)-180}
 
-function demoGps(t){const b=t*0.02;return{latitude:50.705+Math.sin(b*0.7)*0.008+Math.cos(b*0.3)*0.004,longitude:7.895+Math.cos(b*0.5)*0.012+Math.sin(b*0.8)*0.003,speed:Math.max(0,6+Math.sin(b*1.2)*4+Math.cos(b*2.5)*2.5+Math.sin(b*0.3)*3)/3.6,heading:(((b*40)+Math.sin(b*0.8)*60+Math.cos(b*1.5)*30)%360+360)%360,altitude:180+Math.sin(b*0.4)*80+Math.cos(b*0.9)*40,accuracy:3+Math.random()*2}}
+let mode='live',gps=null,lu=null,sH=[],aH=[],mxS=0,sS=0,sC=0,smH=0,wId=null,dIv=null,dT=0,built=false;
 
-function mkSpark(data,col,id,h=40){if(!data||data.length<2)return'';const mn=Math.min(...data),mx=Math.max(...data),rng=mx-mn||1,w=200;const pts=data.map((v,i)=>`${(i/(data.length-1))*w},${h-((v-mn)/rng)*(h-4)-2}`);const last=data[data.length-1],ly=h-((last-mn)/rng)*(h-4)-2;return`<svg viewBox="0 0 ${w} ${h}" style="width:100%;height:${h}px;display:block"><defs><linearGradient id="sg${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${col}" stop-opacity="0.3"/><stop offset="100%" stop-color="${col}" stop-opacity="0"/></linearGradient></defs><path d="M0,${h} L${pts.join(' L')} L${w},${h} Z" fill="url(#sg${id})"/><polyline points="${pts.join(' ')}" fill="none" stroke="${col}" stroke-width="1.5" stroke-linejoin="round"/><circle cx="${w}" cy="${ly}" r="2.5" fill="${col}"><animate attributeName="r" values="2.5;4;2.5" dur="2s" repeatCount="indefinite"/><animate attributeName="opacity" values="1;0.4;1" dur="2s" repeatCount="indefinite"/></circle></svg>`}
+// ── DEMO ──
+function dGps(t){const b=t*0.02;return{latitude:50.705+Math.sin(b*.7)*.008+Math.cos(b*.3)*.004,longitude:7.895+Math.cos(b*.5)*.012+Math.sin(b*.8)*.003,speed:Math.max(0,6+Math.sin(b*1.2)*4+Math.cos(b*2.5)*2.5+Math.sin(b*.3)*3)/3.6,heading:(((b*40)+Math.sin(b*.8)*60+Math.cos(b*1.5)*30)%360+360)%360,altitude:180+Math.sin(b*.4)*80+Math.cos(b*.9)*40,accuracy:3+Math.random()*2}}
 
-function mkPosGrid(lat,lon){const mx=((lon+180)/360)*160,my=((90-lat)/180)*120;let l='';for(let i=0;i<7;i++)l+=`<line x1="0" y1="${i*20}" x2="160" y2="${i*20}" stroke="rgba(201,168,76,0.07)" stroke-width="0.5"/>`;for(let i=0;i<9;i++)l+=`<line x1="${i*20}" y1="0" x2="${i*20}" y2="120" stroke="rgba(201,168,76,0.07)" stroke-width="0.5"/>`;return`<svg viewBox="0 0 160 120" style="width:100%;max-width:240px;display:block;margin:0 auto">${l}<line x1="${mx-14}" y1="${my}" x2="${mx+14}" y2="${my}" stroke="var(--cyan)" stroke-width="0.6" opacity="0.5"/><line x1="${mx}" y1="${my-14}" x2="${mx}" y2="${my+14}" stroke="var(--cyan)" stroke-width="0.6" opacity="0.5"/><circle cx="${mx}" cy="${my}" r="13" fill="none" stroke="var(--cyan)" stroke-width="0.5" opacity="0.25"/><circle cx="${mx}" cy="${my}" r="3" fill="var(--cyan)"><animate attributeName="r" values="3;5.5;3" dur="2s" repeatCount="indefinite"/><animate attributeName="opacity" values="1;0.3;1" dur="2s" repeatCount="indefinite"/></circle><circle cx="${mx}" cy="${my}" r="2" fill="white"/><text x="${mx+9}" y="${my-9}" fill="var(--cyan)" font-size="7" font-family="var(--mono)" opacity="0.65">${lat.toFixed(2)}°</text></svg>`}
+// ── BUILD STATIC SVG PARTS (once) ──
+function buildOnce(){
+  if(built)return;built=true;
 
-function mkSpd(speed,maxS=60){const pct=clamp(speed/maxS,0,1),sA=-135,eA=135,sw=sA+pct*(eA-sA),r=70,cx=90,cy=90;const p=(a,rd)=>({x:cx+rd*Math.cos((a-90)*Math.PI/180),y:cy+rd*Math.sin((a-90)*Math.PI/180)});const arc=(f,t,rd)=>{const s=p(f,rd),e=p(t,rd),lg=t-f>180?1:0;return`M ${s.x} ${s.y} A ${rd} ${rd} 0 ${lg} 1 ${e.x} ${e.y}`};const tip=p(sw,r-10),nA=sw-90,b1={x:cx+3*Math.cos((nA+90)*Math.PI/180),y:cy+3*Math.sin((nA+90)*Math.PI/180)},b2={x:cx+3*Math.cos((nA-90)*Math.PI/180),y:cy+3*Math.sin((nA-90)*Math.PI/180)};let tk='';for(let i=0;i<=12;i++){const a=sA+(i/12)*(eA-sA),inn=p(a,r+8),out=p(a,r+14),lb=p(a,r+23),v=Math.round((i/12)*maxS);tk+=`<line x1="${inn.x}" y1="${inn.y}" x2="${out.x}" y2="${out.y}" stroke="var(--dim)" stroke-width="${i%3===0?1.5:0.5}"/>`;if(i%3===0)tk+=`<text x="${lb.x}" y="${lb.y}" text-anchor="middle" dominant-baseline="central" fill="var(--dim)" font-size="7" font-family="var(--mono)">${v}</text>`}const aa=pct>0.005?`<path d="${arc(sA,sw,r)}" fill="none" stroke="var(--cyan)" stroke-width="14" stroke-linecap="round" style="filter:drop-shadow(0 0 7px var(--cyan))"/>`:'';return`<svg viewBox="0 0 180 130" style="width:100%;max-width:270px;display:block;margin:0 auto"><path d="${arc(sA,eA,r)}" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="14" stroke-linecap="round"/><path d="${arc(sA,sA+90,r)}" fill="none" stroke="var(--green)" stroke-width="14" stroke-linecap="round" opacity="0.12"/><path d="${arc(sA+90,sA+180,r)}" fill="none" stroke="var(--yellow)" stroke-width="14" stroke-linecap="round" opacity="0.12"/><path d="${arc(sA+180,eA,r)}" fill="none" stroke="var(--red)" stroke-width="14" stroke-linecap="round" opacity="0.12"/>${aa}${tk}<polygon points="${tip.x},${tip.y} ${b1.x},${b1.y} ${b2.x},${b2.y}" fill="var(--gold)" style="filter:drop-shadow(0 0 4px var(--gold))"/><circle cx="${cx}" cy="${cy}" r="5" fill="var(--bg)" stroke="var(--gold)" stroke-width="1.5"/><text x="${cx}" y="${cy+28}" text-anchor="middle" fill="var(--white)" font-size="21" font-weight="700" font-family="var(--mono)">${speed.toFixed(1)}</text><text x="${cx}" y="${cy+41}" text-anchor="middle" fill="var(--dim)" font-size="8" font-family="var(--sans)">km/h</text></svg>`}
+  // Position grid lines
+  const pg=$('pgGrid');let gl='';
+  for(let i=0;i<7;i++){const l=document.createElementNS('http://www.w3.org/2000/svg','line');l.setAttribute('x1','0');l.setAttribute('y1',i*20);l.setAttribute('x2','160');l.setAttribute('y2',i*20);l.setAttribute('stroke','rgba(201,168,76,0.07)');l.setAttribute('stroke-width','0.5');pg.appendChild(l)}
+  for(let i=0;i<9;i++){const l=document.createElementNS('http://www.w3.org/2000/svg','line');l.setAttribute('x1',i*20);l.setAttribute('y1','0');l.setAttribute('x2',i*20);l.setAttribute('y2','120');l.setAttribute('stroke','rgba(201,168,76,0.07)');l.setAttribute('stroke-width','0.5');pg.appendChild(l)}
 
-function mkAlt(alt,maxA=2000){const pct=clamp((alt||0)/maxA,0,1),bH=120,fH=pct*bH;let lb='';[0,500,1000,1500,2000].forEach(v=>{const y=10+bH-(v/maxA)*bH;lb+=`<line x1="46" y1="${y}" x2="50" y2="${y}" stroke="var(--dim)" stroke-width="0.5"/><text x="54" y="${y}" dominant-baseline="central" fill="var(--dim)" font-size="6" font-family="var(--mono)">${v}</text>`});return`<svg viewBox="0 0 60 140" style="height:130px"><defs><linearGradient id="aG" x1="0" y1="1" x2="0" y2="0"><stop offset="0%" stop-color="#1E40AF"/><stop offset="40%" stop-color="#059669"/><stop offset="80%" stop-color="#92400E"/><stop offset="100%" stop-color="#78350F"/></linearGradient><clipPath id="aC"><rect x="15" y="${10+bH-fH}" width="30" height="${fH}" rx="4"/></clipPath></defs><rect x="15" y="10" width="30" height="${bH}" rx="6" fill="rgba(255,255,255,0.04)" stroke="var(--gold-dim)" stroke-width="0.5"/><rect x="15" y="10" width="30" height="${bH}" rx="6" fill="url(#aG)" clip-path="url(#aC)"/>${lb}<text x="30" y="138" text-anchor="middle" fill="var(--dim)" font-size="7">m</text></svg>`}
+  // Speed gauge background arcs + ticks
+  const sA=-135,eA=135,r=70,cx=90,cy=90;
+  const p2c=(a,rd)=>({x:cx+rd*Math.cos((a-90)*Math.PI/180),y:cy+rd*Math.sin((a-90)*Math.PI/180)});
+  const arc=(f,t,rd)=>{const s=p2c(f,rd),e=p2c(t,rd),lg=t-f>180?1:0;return`M ${s.x} ${s.y} A ${rd} ${rd} 0 ${lg} 1 ${e.x} ${e.y}`};
+  const bg=$('spdBg');
+  [[sA,eA,'rgba(255,255,255,0.05)'],[sA,sA+90,'rgba(52,211,153,0.12)'],[sA+90,sA+180,'rgba(251,191,36,0.12)'],[sA+180,eA,'rgba(255,77,77,0.12)']].forEach(([f,t,c])=>{
+    const p=document.createElementNS('http://www.w3.org/2000/svg','path');p.setAttribute('d',arc(f,t,r));p.setAttribute('fill','none');p.setAttribute('stroke',c);p.setAttribute('stroke-width','14');p.setAttribute('stroke-linecap','round');bg.appendChild(p)});
+  const tk=$('spdTicks');
+  for(let i=0;i<=12;i++){const a=sA+(i/12)*(eA-sA),inn=p2c(a,r+8),out=p2c(a,r+14),lb=p2c(a,r+23),v=Math.round((i/12)*60);
+    const l=document.createElementNS('http://www.w3.org/2000/svg','line');l.setAttribute('x1',inn.x);l.setAttribute('y1',inn.y);l.setAttribute('x2',out.x);l.setAttribute('y2',out.y);l.setAttribute('stroke','var(--dim)');l.setAttribute('stroke-width',i%3===0?'1.5':'0.5');tk.appendChild(l);
+    if(i%3===0){const t=document.createElementNS('http://www.w3.org/2000/svg','text');t.setAttribute('x',lb.x);t.setAttribute('y',lb.y);t.setAttribute('text-anchor','middle');t.setAttribute('dominant-baseline','central');t.setAttribute('fill','var(--dim)');t.setAttribute('font-size','7');t.setAttribute('font-family','var(--mono)');t.textContent=v;tk.appendChild(t)}}
 
-function mkCompass(h){let tk='';for(let i=0;i<72;i++){const a=i*5*Math.PI/180,mj=i%18===0,md=i%9===0,r1=mj?72:md?75:78;tk+=`<line x1="${100+r1*Math.sin(a)}" y1="${100-r1*Math.cos(a)}" x2="${100+80*Math.sin(a)}" y2="${100-80*Math.cos(a)}" stroke="${mj?'var(--gold)':'var(--dim)'}" stroke-width="${mj?1.5:0.4}"/>`}let cd='';[['N',0,'var(--red)'],['E',90,'var(--gold)'],['S',180,'var(--gold)'],['W',270,'var(--gold)']].forEach(([l,d,c])=>{const a=d*Math.PI/180;cd+=`<text x="${100+64*Math.sin(a)}" y="${100-64*Math.cos(a)}" text-anchor="middle" dominant-baseline="central" fill="${c}" font-size="13" font-weight="800" font-family="var(--sans)">${l}</text>`});let ic='';[['NE',45],['SE',135],['SW',225],['NW',315]].forEach(([l,d])=>{const a=d*Math.PI/180;ic+=`<text x="${100+64*Math.sin(a)}" y="${100-64*Math.cos(a)}" text-anchor="middle" dominant-baseline="central" fill="var(--dim)" font-size="8" font-family="var(--sans)">${l}</text>`});return`<svg viewBox="0 0 200 200" style="width:100%;max-width:230px;display:block;margin:0 auto"><circle cx="100" cy="100" r="92" fill="none" stroke="var(--gold-dim)" stroke-width="1"/><circle cx="100" cy="100" r="80" fill="rgba(10,22,40,0.6)" stroke="rgba(255,255,255,0.04)" stroke-width="0.5"/><g class="compass-ring" id="compassRing" style="transform:rotate(${-h}deg);transform-origin:100px 100px">${tk}${cd}${ic}<polygon points="100,10 96,20 104,20" fill="var(--red)"/></g><polygon points="100,12 96,4 104,4" fill="var(--cyan)" style="filter:drop-shadow(0 0 5px var(--cyan))"/><circle cx="100" cy="100" r="3" fill="var(--gold)"/></svg>`}
-
-// ═══ UPDATE (targeted, no flicker) ═══
-function update(c){
-  const spd=toKmh(c.speed),kn=toKn(c.speed),alt=c.altitude,hdg=c.heading,avg=spdCount>0?spdSum/spdCount:0;
-  $('latDMS').textContent=toDMS(c.latitude,true);
-  $('lonDMS').textContent=toDMS(c.longitude,false);
-  $('latLonDec').textContent=`${c.latitude.toFixed(6)}° / ${c.longitude.toFixed(6)}°`;
-  $('posGrid').innerHTML=mkPosGrid(c.latitude,c.longitude);
-  $('speedGauge').innerHTML=mkSpd(spd);
-  $('valKnots').textContent=kn.toFixed(1)+' kn';
-  $('valMaxSpd').textContent=maxSpd.toFixed(1)+' km/h';
-  $('valAvgSpd').textContent=avg.toFixed(1)+' km/h';
-  $('sparkSpeed').innerHTML=mkSpark(speedHist,'#00D4FF','spd');
-  $('altGauge').innerHTML=mkAlt(alt);
-  $('valAltM').textContent=alt!=null?Math.round(alt):'—';
-  $('valAltFt').textContent=alt!=null?Math.round(toFt(alt)):'—';
-  $('sparkAlt').innerHTML=mkSpark(altHist,'#34D399','alt');
-  const cw=$('compassWrap');
-  if(!cw.hasChildNodes())cw.innerHTML=mkCompass(hdg!=null?smoothHdg:0);
-  else{const r=document.getElementById('compassRing');if(r)r.style.transform=`rotate(${-(hdg!=null?smoothHdg:0)}deg)`}
-  $('valHdgDeg').textContent=hdg!=null?Math.round(hdg)+'°':'—';
-  $('valHdgTxt').textContent=hdg!=null?hdgTxt(hdg):'Kein Kurs';
-  if(c.accuracy!=null){const a=c.accuracy,g=a<10,o=a<30,col=g?'var(--green)':o?'var(--yellow)':'var(--red)',lb=g?'Exzellent':o?'Gut':'Niedrig';$('statusLeft').innerHTML=`<span class="accuracy-dot" style="background:${col};box-shadow:0 0 6px ${col}"></span><span style="font-size:10px;color:${col}">±${Math.round(a)}m · ${lb}</span>`}else if(mode==='demo')$('statusLeft').innerHTML='<span style="color:var(--yellow);font-size:10px">🎮 Demo</span>';
-  $('statusTime').textContent=lastUpdate?lastUpdate.toLocaleTimeString('de-DE'):'—';
+  // Compass ring static elements
+  const cr=$('compRing');
+  for(let i=0;i<72;i++){const a=i*5*Math.PI/180,mj=i%18===0,md=i%9===0,r1=mj?72:md?75:78;
+    const l=document.createElementNS('http://www.w3.org/2000/svg','line');l.setAttribute('x1',100+r1*Math.sin(a));l.setAttribute('y1',100-r1*Math.cos(a));l.setAttribute('x2',100+80*Math.sin(a));l.setAttribute('y2',100-80*Math.cos(a));l.setAttribute('stroke',mj?'var(--gold)':'var(--dim)');l.setAttribute('stroke-width',mj?'1.5':'0.4');cr.appendChild(l)};
+  [['N',0,'var(--red)'],['E',90,'var(--gold)'],['S',180,'var(--gold)'],['W',270,'var(--gold)']].forEach(([lb,d,c])=>{
+    const a=d*Math.PI/180,t=document.createElementNS('http://www.w3.org/2000/svg','text');t.setAttribute('x',100+64*Math.sin(a));t.setAttribute('y',100-64*Math.cos(a));t.setAttribute('text-anchor','middle');t.setAttribute('dominant-baseline','central');t.setAttribute('fill',c);t.setAttribute('font-size','13');t.setAttribute('font-weight','800');t.setAttribute('font-family','var(--sans)');t.textContent=lb;cr.appendChild(t)});
+  [['NE',45],['SE',135],['SW',225],['NW',315]].forEach(([lb,d])=>{
+    const a=d*Math.PI/180,t=document.createElementNS('http://www.w3.org/2000/svg','text');t.setAttribute('x',100+64*Math.sin(a));t.setAttribute('y',100-64*Math.cos(a));t.setAttribute('text-anchor','middle');t.setAttribute('dominant-baseline','central');t.setAttribute('fill','var(--dim)');t.setAttribute('font-size','8');t.setAttribute('font-family','var(--sans)');t.textContent=lb;cr.appendChild(t)});
+  const np=document.createElementNS('http://www.w3.org/2000/svg','polygon');np.setAttribute('points','100,10 96,20 104,20');np.setAttribute('fill','var(--red)');cr.appendChild(np);
 }
 
-function processData(c){
-  const first=!gps;gps=c;lastUpdate=new Date();
-  const spd=toKmh(c.speed);if(spd>0){spdSum+=spd;spdCount++}if(spd>maxSpd)maxSpd=spd;
-  speedHist.push(spd);if(speedHist.length>HIST)speedHist.shift();
-  altHist.push(c.altitude||0);if(altHist.length>HIST)altHist.shift();
-  if(c.heading!=null)smoothHdg=shortRot(smoothHdg,c.heading);
-  if(first){$('loaderScreen').style.display='none';$('dashboardScreen').style.display='block'}
-  update(c);
+// ── CANVAS SPARKLINE (no DOM churn) ──
+function drawSpark(canvasId,data,color){
+  const c=document.getElementById(canvasId);if(!c)return;
+  const ctx=c.getContext('2d');
+  const dpr=window.devicePixelRatio||1;
+  const w=c.clientWidth,h=c.clientHeight;
+  if(c.width!==w*dpr||c.height!==h*dpr){c.width=w*dpr;c.height=h*dpr}
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,w,h);
+  if(!data||data.length<2)return;
+  const mn=Math.min(...data),mx=Math.max(...data),rng=mx-mn||1;
+  // area fill
+  ctx.beginPath();ctx.moveTo(0,h);
+  data.forEach((v,i)=>{const x=(i/(data.length-1))*w,y=h-((v-mn)/rng)*(h-4)-2;ctx.lineTo(x,y)});
+  ctx.lineTo(w,h);ctx.closePath();
+  const grd=ctx.createLinearGradient(0,0,0,h);grd.addColorStop(0,color+'4D');grd.addColorStop(1,color+'00');
+  ctx.fillStyle=grd;ctx.fill();
+  // line
+  ctx.beginPath();
+  data.forEach((v,i)=>{const x=(i/(data.length-1))*w,y=h-((v-mn)/rng)*(h-4)-2;i===0?ctx.moveTo(x,y):ctx.lineTo(x,y)});
+  ctx.strokeStyle=color;ctx.lineWidth=1.5;ctx.lineJoin='round';ctx.stroke();
+  // dot
+  const lv=data[data.length-1],ly=h-((lv-mn)/rng)*(h-4)-2;
+  ctx.beginPath();ctx.arc(w,ly,3,0,Math.PI*2);ctx.fillStyle=color;ctx.fill();
 }
-function resetData(){gps=null;speedHist=[];altHist=[];maxSpd=0;spdSum=0;spdCount=0;smoothHdg=0;lastUpdate=null;$('compassWrap').innerHTML=''}
 
-function startLive(){
-  if(!navigator.geolocation){$('loaderMsg').textContent='Geolocation nicht unterstützt.';return}
-  $('loaderScreen').style.display='block';$('dashboardScreen').style.display='none';$('loaderMsg').textContent='GPS-Signal wird gesucht…';$('helpCard').style.display='none';
-  watchId=navigator.geolocation.watchPosition(pos=>processData(pos.coords),err=>{
-    if(err.code===1){$('loaderMsg').textContent='Standortzugriff verweigert.';$('helpCard').style.display='block';$('helpCard').innerHTML=`<div class="help-card"><h3>📡 GPS blockiert</h3><p>So behebst du das:</p><ol><li>Tippe auf das <b>🔒 Schloss</b> in der Adressleiste</li><li><b>Berechtigungen → Standort → Zulassen</b></li><li>Seite neu laden</li></ol><p style="margin-top:8px"><b>Tipp:</b> file://-URLs unterstützen kein GPS. Nutze GitHub Pages oder den Demo-Modus!</p><button class="retry-btn" onclick="retryGps()">🔄 Erneut versuchen</button></div>`}
-    else $('loaderMsg').textContent=err.code===2?'GPS nicht verfügbar.':'Fehler bei Positionsermittlung.';
-  },{enableHighAccuracy:true,maximumAge:1000,timeout:10000});
+// ── UPDATE (all setAttribute, no innerHTML) ──
+function upd(c){
+  const spd=toKmh(c.speed),kn=toKn(c.speed),alt=c.altitude,hdg=c.heading,avg=sC>0?sS/sC:0;
+
+  // Position texts
+  $('vLat').textContent=toDMS(c.latitude,true);
+  $('vLon').textContent=toDMS(c.longitude,false);
+  $('vLL').textContent=`${c.latitude.toFixed(6)}° / ${c.longitude.toFixed(6)}°`;
+
+  // Position grid – move elements
+  const mx=((c.longitude+180)/360)*160,my=((90-c.latitude)/180)*120;
+  $('pgH').setAttribute('x1',mx-14);$('pgH').setAttribute('y1',my);$('pgH').setAttribute('x2',mx+14);$('pgH').setAttribute('y2',my);
+  $('pgV').setAttribute('x1',mx);$('pgV').setAttribute('y1',my-14);$('pgV').setAttribute('x2',mx);$('pgV').setAttribute('y2',my+14);
+  $('pgC').setAttribute('cx',mx);$('pgC').setAttribute('cy',my);
+  $('pgP').setAttribute('cx',mx);$('pgP').setAttribute('cy',my);
+  $('pgD').setAttribute('cx',mx);$('pgD').setAttribute('cy',my);
+  $('pgT').setAttribute('x',mx+9);$('pgT').setAttribute('y',my-9);$('pgT').textContent=c.latitude.toFixed(2)+'°';
+
+  // Speed gauge – update needle transform + arc path + value
+  const sA=-135,eA=135,r=70,cx2=90,cy2=90,maxS=60;
+  const pct=clamp(spd/maxS,0,1),sw2=sA+pct*(eA-sA);
+  const p2c=(a,rd)=>({x:cx2+rd*Math.cos((a-90)*Math.PI/180),y:cy2+rd*Math.sin((a-90)*Math.PI/180)});
+  const arc2=(f,t,rd)=>{const s=p2c(f,rd),e=p2c(t,rd),lg=t-f>180?1:0;return`M ${s.x} ${s.y} A ${rd} ${rd} 0 ${lg} 1 ${e.x} ${e.y}`};
+
+  if(pct>0.005)$('spdArc').setAttribute('d',arc2(sA,sw2,r));
+  else $('spdArc').setAttribute('d','M0,0');
+
+  // Needle: rotate from center
+  $('spdNeedle').style.transform=`rotate(${sw2}deg)`;
+  $('spdNeedle').style.transformOrigin=`${cx2}px ${cy2}px`;
+  // Update needle polygon shape (pointing up from center)
+  const tip=p2c(sw2,r-10),nA=sw2-90;
+  const b1={x:cx2+3*Math.cos((nA+90)*Math.PI/180),y:cy2+3*Math.sin((nA+90)*Math.PI/180)};
+  const b2={x:cx2+3*Math.cos((nA-90)*Math.PI/180),y:cy2+3*Math.sin((nA-90)*Math.PI/180)};
+  $('spdNPoly').setAttribute('points',`${tip.x},${tip.y} ${b1.x},${b1.y} ${b2.x},${b2.y}`);
+
+  $('spdVal').textContent=spd.toFixed(1);
+  $('vKn').textContent=kn.toFixed(1)+' kn';
+  $('vMx').textContent=mxS.toFixed(1)+' km/h';
+  $('vAv').textContent=avg.toFixed(1)+' km/h';
+
+  // Speed sparkline (canvas)
+  drawSpark('cSpd',sH,'#00D4FF');
+
+  // Altitude gauge – update clip rect
+  const altVal=alt||0,maxA=2000,apct=clamp(altVal/maxA,0,1),bH=120,fH=apct*bH;
+  $('altClipRect').setAttribute('y',10+bH-fH);
+  $('altClipRect').setAttribute('height',fH);
+  $('vAm').textContent=alt!=null?Math.round(alt):'—';
+  $('vAf').textContent=alt!=null?Math.round(toFt(alt)):'—';
+  drawSpark('cAlt',aH,'#34D399');
+
+  // Compass – just rotate ring
+  $('compRing').style.transform=`rotate(${-(hdg!=null?smH:0)}deg)`;
+  $('compRing').style.transformOrigin='100px 100px';
+  $('vHd').textContent=hdg!=null?Math.round(hdg)+'°':'—';
+  $('vHt').textContent=hdg!=null?hTxt(hdg):'Kein Kurs';
+
+  // Status
+  if(c.accuracy!=null){const a=c.accuracy,g=a<10,o=a<30,col=g?'var(--green)':o?'var(--yellow)':'var(--red)',lb=g?'Exzellent':o?'Gut':'Niedrig';
+    $('stL').innerHTML=`<span class="adot" style="background:${col};box-shadow:0 0 6px ${col}"></span><span style="font-size:10px;color:${col}">±${Math.round(a)}m · ${lb}</span>`}
+  else if(mode==='demo')$('stL').innerHTML='<span style="color:var(--yellow);font-size:10px">🎮 Demo</span>';
+  $('stT').textContent=lu?lu.toLocaleTimeString('de-DE'):'—';
 }
-function stopLive(){if(watchId!=null){navigator.geolocation.clearWatch(watchId);watchId=null}}
-function startDemo(){demoT=0;processData(demoGps(0));demoIv=setInterval(()=>{demoT++;processData(demoGps(demoT))},1000)}
-function stopDemo(){if(demoIv){clearInterval(demoIv);demoIv=null}}
 
-window.switchMode=function(m){if(m===mode)return;stopLive();stopDemo();resetData();mode=m;
-  $('btnLive').classList.toggle('active',m==='live');$('btnDemo').classList.toggle('active',m==='demo');
-  $('demoBadge').classList.toggle('show',m==='demo');$('helpCard').style.display='none';
-  if(m==='live')startLive();else startDemo()};
-window.retryGps=function(){$('helpCard').style.display='none';stopLive();resetData();startLive()};
+function proc(c){
+  const first=!gps;gps=c;lu=new Date();
+  const spd=toKmh(c.speed);if(spd>0){sS+=spd;sC++}if(spd>mxS)mxS=spd;
+  sH.push(spd);if(sH.length>H)sH.shift();
+  aH.push(c.altitude||0);if(aH.length>H)aH.shift();
+  if(c.heading!=null)smH=sRot(smH,c.heading);
+  if(first){buildOnce();$('LS').style.display='none';$('DS').style.display='block'}
+  upd(c);
+}
 
-$('posData').addEventListener('click',()=>{if(!gps)return;const t=`${gps.latitude.toFixed(6)}, ${gps.longitude.toFixed(6)}`;if(navigator.clipboard)navigator.clipboard.writeText(t).then(()=>{const e=$('copyToast');e.classList.add('show');setTimeout(()=>e.classList.remove('show'),2000)}).catch(()=>{})});
+function reset(){gps=null;sH=[];aH=[];mxS=0;sS=0;sC=0;smH=0;lu=null}
 
-startLive();
+function startL(){
+  if(!navigator.geolocation){$('lMsg').textContent='Geolocation nicht unterstützt.';return}
+  $('LS').style.display='block';$('DS').style.display='none';$('lMsg').textContent='GPS-Signal wird gesucht…';$('hCard').style.display='none';
+  wId=navigator.geolocation.watchPosition(p=>proc(p.coords),e=>{
+    if(e.code===1){$('lMsg').textContent='Standortzugriff verweigert.';$('hCard').style.display='block';$('hCard').innerHTML=`<div class="hc"><h3>📡 GPS blockiert</h3><p>So behebst du das:</p><ol><li>Tippe auf das <b>🔒 Schloss</b> in der Adressleiste</li><li><b>Berechtigungen → Standort → Zulassen</b></li><li>Seite neu laden</li></ol><p style="margin-top:8px"><b>Tipp:</b> file://-URLs unterstützen kein GPS. Nutze GitHub Pages oder den Demo-Modus!</p><button class="rb" onclick="rGps()">🔄 Erneut versuchen</button></div>`}
+    else $('lMsg').textContent=e.code===2?'GPS nicht verfügbar.':'Positionsfehler.';
+  },{enableHighAccuracy:true,maximumAge:1000,timeout:10000})}
+function stopL(){if(wId!=null){navigator.geolocation.clearWatch(wId);wId=null}}
+function startD(){dT=0;proc(dGps(0));dIv=setInterval(()=>{dT++;proc(dGps(dT))},1000)}
+function stopD(){if(dIv){clearInterval(dIv);dIv=null}}
+
+window.sw=function(m){if(m===mode)return;stopL();stopD();reset();mode=m;
+  $('bLive').classList.toggle('on',m==='live');$('bDemo').classList.toggle('on',m==='demo');
+  $('dBadge').classList.toggle('on',m==='demo');$('hCard').style.display='none';
+  if(m==='live')startL();else startD()};
+window.rGps=function(){$('hCard').style.display='none';stopL();reset();startL()};
+
+$('pD').addEventListener('click',()=>{if(!gps)return;const t=`${gps.latitude.toFixed(6)}, ${gps.longitude.toFixed(6)}`;if(navigator.clipboard)navigator.clipboard.writeText(t).then(()=>{$('cToast').classList.add('on');setTimeout(()=>$('cToast').classList.remove('on'),2000)}).catch(()=>{})});
+
+startL();
 </script>
 </body>
 </html>
