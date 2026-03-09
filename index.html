@@ -173,6 +173,10 @@ canvas{will-change:transform;transform:translateZ(0)}
 <div class="sb"><div class="sbl">Ø</div><div class="sv" id="vAv">0.0 km/h</div></div>
 </div>
 <div style="margin-top:10px"><div class="skl">Geschwindigkeit (60s)</div><canvas id="cSp" height="40" style="width:100%;height:40px"></canvas></div>
+<div style="margin-top:8px;display:flex;justify-content:space-between;align-items:center">
+<div style="font-size:9px;color:var(--dim)" id="vSess">Session: —</div>
+<button onclick="resetStats()" style="font-family:var(--sans);font-size:9px;color:var(--gold);background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);border-radius:8px;padding:4px 10px;cursor:pointer;-webkit-tap-highlight-color:transparent">↺ Reset</button>
+</div>
 </div>
 
 <div class="crd"><div class="cl"><span>📐</span> Höhe</div>
@@ -231,13 +235,32 @@ const sm={speed:null,heading:null,altitude:null,lat:null,lon:null,
 
 let mode='live',gps=null,lu=null,sH=[],aH=[],mxS=0,sS=0,sC=0,wId=null,dIv=null,dT=0,built=false;
 
+// ══ SESSION PERSISTENCE ══
+const STORE_KEY='tw_nav_session';
+function saveSession(){
+  try{localStorage.setItem(STORE_KEY,JSON.stringify({mxS,sS,sC,ts:Date.now()}))}catch(e){}
+}
+function loadSession(){
+  try{
+    const d=JSON.parse(localStorage.getItem(STORE_KEY));
+    if(d&&d.ts&&(Date.now()-d.ts)<86400000){// max 24h session
+      mxS=d.mxS||0;sS=d.sS||0;sC=d.sC||0;
+    }
+  }catch(e){}
+}
+function clearSession(){
+  mxS=0;sS=0;sC=0;
+  try{localStorage.removeItem(STORE_KEY)}catch(e){}
+}
+loadSession(); // restore on page load
+
 function dGps(t){const b=t*0.02;return{latitude:50.705+Math.sin(b*.7)*.008+Math.cos(b*.3)*.004,longitude:7.895+Math.cos(b*.5)*.012+Math.sin(b*.8)*.003,speed:Math.max(0,6+Math.sin(b*1.2)*4+Math.cos(b*2.5)*2.5+Math.sin(b*.3)*3)/3.6,heading:(((b*40)+Math.sin(b*.8)*60+Math.cos(b*1.5)*30)%360+360)%360,altitude:180+Math.sin(b*.4)*80+Math.cos(b*.9)*40,accuracy:3+Math.random()*2}}
 
 function buildOnce(){
   if(built)return;built=true;
   // Init Leaflet map
   window.posMap=L.map('posMap',{zoomControl:false,attributionControl:false,dragging:false,scrollWheelZoom:false,doubleClickZoom:false,boxZoom:false,keyboard:false,tap:false,touchZoom:false}).setView([50.705,7.895],15);
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{maxZoom:19}).addTo(window.posMap);
+  L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png',{maxZoom:19}).addTo(window.posMap);
   window.posMarker=L.circleMarker([50.705,7.895],{radius:8,color:'#00D4FF',fillColor:'#00D4FF',fillOpacity:0.5,weight:2}).addTo(window.posMap);
   window.posAccCircle=L.circle([50.705,7.895],{radius:10,color:'#00D4FF',fillColor:'#00D4FF',fillOpacity:0.08,weight:0.5}).addTo(window.posMap);
   window.mapReady=false;
@@ -319,16 +342,24 @@ function upd(c){
     $('stL').innerHTML=`<span class="adot" style="background:${col};box-shadow:0 0 6px ${col}"></span><span style="font-size:10px;color:${col}">±${Math.round(a)}m · ${lb}</span>`}
   else if(mode==='demo')$('stL').innerHTML='<span style="color:var(--yellow);font-size:10px">🎮 Demo</span>';
   $('stT').textContent=lu?lu.toLocaleTimeString('de-DE'):'—';
+  // Session info
+  const sess=$('vSess');if(sess){
+    try{const d=JSON.parse(localStorage.getItem(STORE_KEY));
+      if(d&&d.ts){const dur=Math.round((Date.now()-d.ts)/60000);
+        sess.textContent=dur<60?`Session: ${dur} Min`:`Session: ${Math.floor(dur/60)}h ${dur%60}m`}
+    }catch(e){}
+  }
 }
 
 function proc(raw){
   const first=!gps;lu=new Date();
   const c=mode==='live'?sm.upd(raw):{latitude:raw.latitude,longitude:raw.longitude,speed:toKmh(raw.speed),heading:raw.heading,altitude:raw.altitude,accuracy:raw.accuracy};
   gps=c;const spd=c.speed;if(spd>0.5){sS+=spd;sC++}if(spd>mxS)mxS=spd;
+  if(mode==='live')saveSession();
   sH.push(spd);if(sH.length>H)sH.shift();aH.push(c.altitude||0);if(aH.length>H)aH.shift();
   if(first){buildOnce();$('LS').style.display='none';$('DS').style.display='block'}upd(c);
 }
-function resetAll(){gps=null;sH=[];aH=[];mxS=0;sS=0;sC=0;lu=null;sm.rst()}
+function resetAll(){gps=null;sH=[];aH=[];mxS=0;sS=0;sC=0;lu=null;sm.rst();clearSession()}
 
 function startL(){
   if(!navigator.geolocation){$('lMsg').textContent='Geolocation nicht unterstützt.';return}
@@ -346,6 +377,7 @@ window.swM=function(m){if(m===mode)return;stopL();stopD();resetAll();mode=m;
   $('dB').classList.toggle('on',m==='demo');$('hCard').style.display='none';
   if(m==='live')startL();else startD()};
 window.rGps=function(){$('hCard').style.display='none';stopL();resetAll();startL()};
+window.resetStats=function(){clearSession();mxS=0;sS=0;sC=0;sH=[];if(gps)upd(gps)};
 
 $('pD').addEventListener('click',()=>{if(!gps)return;const t=`${gps.latitude.toFixed(6)}, ${gps.longitude.toFixed(6)}`;if(navigator.clipboard)navigator.clipboard.writeText(t).then(()=>{$('cT').classList.add('on');setTimeout(()=>$('cT').classList.remove('on'),2000)}).catch(()=>{})});
 
