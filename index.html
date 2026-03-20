@@ -318,7 +318,7 @@ function initMap(lat,lon){
   if(mapInited)return;
   mapInited=true;
   leafMap=L.map('mapDiv',{zoomControl:false,attributionControl:false}).setView([lat,lon],15);
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{maxZoom:19}).addTo(leafMap);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{maxZoom:19}).addTo(leafMap);
   leafMarker=L.circleMarker([lat,lon],{radius:7,color:'#00D4FF',fillColor:'#00D4FF',fillOpacity:0.9,weight:2}).addTo(leafMap);
   leafMap.on('mousedown touchstart',function(){mapPausedFlag=true;clearTimeout(mapPauseT);mapPauseT=setTimeout(function(){mapPausedFlag=false},10000)});
   setTimeout(function(){leafMap.invalidateSize()},200);
