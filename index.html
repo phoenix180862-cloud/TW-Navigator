@@ -103,6 +103,24 @@ canvas{will-change:transform;transform:translateZ(0)}
 .log-active{border-color:var(--green);box-shadow:0 0 12px rgba(52,211,153,0.15)}
 .log-active-badge{display:inline-block;background:rgba(52,211,153,0.15);color:var(--green);font-size:8px;font-weight:700;letter-spacing:1px;padding:2px 8px;border-radius:6px;border:1px solid rgba(52,211,153,0.3);animation:wl-blink 2s ease-in-out infinite}
 .log-empty{text-align:center;padding:20px;color:var(--dim);font-size:12px}
+/* ═══ RECORDING CONTROLS ═══ */
+.rec-bar{display:flex;gap:8px;margin-bottom:14px;align-items:center}
+.rec-toggle{display:flex;align-items:center;gap:8px;flex:1;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:12px;padding:10px 14px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.rec-toggle.on{border-color:var(--green);background:rgba(52,211,153,0.06)}
+.rec-toggle.off{border-color:var(--red);background:rgba(255,77,77,0.04)}
+.rec-switch{width:40px;height:22px;border-radius:11px;position:relative;transition:background .3s;flex-shrink:0}
+.rec-toggle.on .rec-switch{background:var(--green)}
+.rec-toggle.off .rec-switch{background:rgba(255,77,77,0.4)}
+.rec-knob{width:18px;height:18px;border-radius:50%;background:white;position:absolute;top:2px;transition:left .3s}
+.rec-toggle.on .rec-knob{left:20px}
+.rec-toggle.off .rec-knob{left:2px}
+.rec-label{font-size:12px;font-weight:600;letter-spacing:1px}
+.rec-toggle.on .rec-label{color:var(--green)}
+.rec-toggle.off .rec-label{color:var(--dim)}
+.rec-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.rec-toggle.on .rec-dot{background:var(--red);animation:wl-blink 1s ease-in-out infinite}
+.rec-toggle.off .rec-dot{background:var(--dim)}
+.rec-reset{font-family:var(--sans);font-size:11px;font-weight:600;color:var(--yellow);background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.25);border-radius:12px;padding:10px 16px;cursor:pointer;white-space:nowrap;-webkit-tap-highlight-color:transparent;letter-spacing:.5px}
 </style>
 </head>
 <body>
@@ -165,6 +183,15 @@ canvas{will-change:transform;transform:translateZ(0)}
 <div class="hdg-big"><div class="hdg-deg" id="vHd2">—</div><div class="hdg-dir" id="vHt2">Kein Kurs</div></div>
 <div class="hdg-compass-mini"><svg viewBox="0 0 120 120" style="width:100px;height:100px"><circle cx="60" cy="60" r="55" fill="none" stroke="var(--gold-dim)" stroke-width="0.5"/><circle cx="60" cy="60" r="45" fill="rgba(10,22,40,.4)" stroke="rgba(255,255,255,.03)" stroke-width="0.5"/><g id="miniCR"></g><polygon points="60,8 57,3 63,3" fill="var(--cyan)" style="filter:drop-shadow(0 0 3px var(--cyan))"/><circle cx="60" cy="60" r="2" fill="var(--gold)"/></svg></div></div></div>
 
+<div class="rec-bar">
+<div class="rec-toggle on" id="recToggle" onclick="toggleRec()">
+<div class="rec-dot"></div>
+<div class="rec-switch"><div class="rec-knob"></div></div>
+<span class="rec-label">AUFZEICHNUNG AN</span>
+</div>
+<button class="rec-reset" onclick="resetRec()">↺ RESET</button>
+</div>
+
 <div class="log-card"><div class="log-title"><span>📋 Fahrtenbuch</span><button class="log-clear" id="logClearAll" onclick="clearAllTrips()">Alle löschen</button></div><div id="tripLog"></div></div>
 </div></div>
 
@@ -185,6 +212,7 @@ const sm={speed:null,heading:null,altitude:null,lat:null,lon:null,
 let mode='live',gps=null,lu=null,sH=[],aH=[],mxS=0,sS=0,sC=0,wId=null,dIv=null,dT=0,built=false;
 let totalDist=0,prevLat=null,prevLon=null,minAlt=Infinity,maxAlt=-Infinity;
 let wakeLock=null,mapInited=false,leafMap=null,leafMarker=null,mapPF=false,mapPT=null;
+let recording=true; // Aufzeichnung AN/AUS
 
 /* ══ SESSION LOGGING ══ */
 const TK='twn_trips',AK='twn_active';
@@ -198,11 +226,42 @@ function updSess(){if(!aS)return;aS.km=totalDist;aS.nm=totalDist*.539957;aS.mx=m
 function endSess(){if(!aS)return;aS.et=new Date().toISOString();aS.km=totalDist;aS.nm=totalDist*.539957;aS.mx=mxS;aS.av=sC>0?sS/sC:0;delete aS._ss;delete aS._sc;if(aS.km>.001||aS.mx>1){const t=ldT();t.unshift(aS);if(t.length>50)t.length=50;svT(t)}aS=null;localStorage.removeItem(AK);renderLog()}
 window.delTrip=function(id){svT(ldT().filter(t=>t.id!==id));renderLog()};
 window.clearAllTrips=function(){if(confirm('Alle gespeicherten Fahrten löschen?')){svT([]);renderLog()}};
+
+/* Toggle recording on/off */
+window.toggleRec=function(){
+  recording=!recording;
+  const el=$('recToggle');
+  if(recording){
+    el.classList.remove('off');el.classList.add('on');
+    el.querySelector('.rec-label').textContent='AUFZEICHNUNG AN';
+    if(!aS)startSess();
+    reqWL();
+  } else {
+    el.classList.remove('on');el.classList.add('off');
+    el.querySelector('.rec-label').textContent='AUFZEICHNUNG AUS';
+    endSess();
+    // Release wake lock to save battery
+    if(wakeLock){try{wakeLock.release()}catch(e){}}
+  }
+  renderLog();
+};
+
+/* Reset current recording values to 0 */
+window.resetRec=function(){
+  if(!confirm('Aktuelle Aufzeichnung zurücksetzen?'))return;
+  if(aS)endSess(); // save current first
+  totalDist=0;mxS=0;sS=0;sC=0;prevLat=null;prevLon=null;minAlt=Infinity;maxAlt=-Infinity;
+  if(recording)startSess();
+  renderLog();
+  // Update display immediately
+  if(gps)upd(gps);
+};
+
 function renderLog(){const el=$('tripLog');if(!el)return;let h='';
-  if(aS){const s=new Date(aS.st);h+=`<div class="log-item log-active"><div class="log-dates"><span class="log-date"><b>${fmtDT(s)}</b></span><span class="log-active-badge">● AUFZEICHNUNG</span></div><div class="log-stats"><div class="log-stat"><div class="log-stat-val">${totalDist.toFixed(3)}</div><div class="log-stat-lbl">km</div></div><div class="log-stat"><div class="log-stat-val">${(totalDist*.539957).toFixed(3)}</div><div class="log-stat-lbl">nm</div></div><div class="log-stat"><div class="log-stat-val">${mxS.toFixed(1)}</div><div class="log-stat-lbl">Max km/h</div></div></div></div>`}
+  if(aS&&recording){const s=new Date(aS.st);h+=`<div class="log-item log-active"><div class="log-dates"><span class="log-date"><b>${fmtDT(s)}</b></span><span class="log-active-badge">● AUFZEICHNUNG</span></div><div class="log-stats"><div class="log-stat"><div class="log-stat-val">${totalDist.toFixed(3)}</div><div class="log-stat-lbl">km</div></div><div class="log-stat"><div class="log-stat-val">${(totalDist*.539957).toFixed(3)}</div><div class="log-stat-lbl">nm</div></div><div class="log-stat"><div class="log-stat-val">${mxS.toFixed(1)}</div><div class="log-stat-lbl">Max km/h</div></div><div class="log-stat"><div class="log-stat-val">${(totalDist>0?totalDist:0).toFixed(1)}</div><div class="log-stat-lbl">Max km</div></div></div></div>`}
   const trips=ldT();
   if(!trips.length&&!aS){h='<div class="log-empty">Noch keine Fahrten aufgezeichnet</div>'}
-  else{trips.forEach(t=>{const s=new Date(t.st),e=t.et?new Date(t.et):null;h+=`<div class="log-item"><span class="log-del" onclick="delTrip(${t.id})">✕</span><div class="log-dates"><span class="log-date"><b>${fmtDT(s)}</b></span><span class="log-arrow">→</span><span class="log-date"><b>${e?fmtDT(e):'—'}</b></span></div><div class="log-stats"><div class="log-stat"><div class="log-stat-val">${(t.km||0).toFixed(3)}</div><div class="log-stat-lbl">km</div></div><div class="log-stat"><div class="log-stat-val">${(t.nm||0).toFixed(3)}</div><div class="log-stat-lbl">nm</div></div><div class="log-stat"><div class="log-stat-val">${(t.mx||0).toFixed(1)}</div><div class="log-stat-lbl">Max km/h</div></div></div></div>`})}
+  else{trips.forEach(t=>{const s=new Date(t.st),e=t.et?new Date(t.et):null;h+=`<div class="log-item"><span class="log-del" onclick="delTrip(${t.id})">✕</span><div class="log-dates"><span class="log-date"><b>${fmtDT(s)}</b></span><span class="log-arrow">→</span><span class="log-date"><b>${e?fmtDT(e):'—'}</b></span></div><div class="log-stats"><div class="log-stat"><div class="log-stat-val">${(t.km||0).toFixed(3)}</div><div class="log-stat-lbl">km</div></div><div class="log-stat"><div class="log-stat-val">${(t.nm||0).toFixed(3)}</div><div class="log-stat-lbl">nm</div></div><div class="log-stat"><div class="log-stat-val">${(t.mx||0).toFixed(1)}</div><div class="log-stat-lbl">Max km/h</div></div><div class="log-stat"><div class="log-stat-val">${(t.km||0).toFixed(1)}</div><div class="log-stat-lbl">Max km</div></div></div></div>`})}
   el.innerHTML=h}
 
 /* ══ WAKE LOCK ══ */
@@ -239,11 +298,13 @@ function upd(c){const spd=c.speed,kn=spd/3.6*1.94384,alt=c.altitude,hdg=c.headin
   drawHT(hdg);if(hdg!=null){$('vHd2').textContent=Math.round(hdg)+'°';$('vHt2').textContent=hTxt(hdg);$('miniCR').style.transform=`rotate(${-hdg}deg)`;$('miniCR').style.transformOrigin='60px 60px';$('miniCR').style.transition='transform .5s cubic-bezier(.25,.46,.45,.94)'}else{$('vHd2').textContent='—';$('vHt2').textContent='Kein Kurs'}
   if(c.accuracy!=null){const a=c.accuracy,g=a<10,o=a<30,col=g?'var(--green)':o?'var(--yellow)':'var(--red)';$('stL').innerHTML=`<span class="adot" style="background:${col};box-shadow:0 0 6px ${col}"></span><span style="font-size:10px;color:${col}">±${Math.round(a)}m · ${g?'Exzellent':o?'Gut':'Niedrig'}</span>`}else if(mode==='demo')$('stL').innerHTML='<span style="color:var(--yellow);font-size:10px">🎮 Demo</span>';$('stT').textContent=lu?lu.toLocaleTimeString('de-DE'):'—'}
 
-function proc(raw){const first=!gps;lu=new Date();const c=mode==='live'?sm.upd(raw):{latitude:raw.latitude,longitude:raw.longitude,speed:toKmh(raw.speed),heading:raw.heading,altitude:raw.altitude,accuracy:raw.accuracy};gps=c;const spd=c.speed;if(spd>.5){sS+=spd;sC++}if(spd>mxS)mxS=spd;if(prevLat!=null&&prevLon!=null&&spd>1){const d=haversine(prevLat,prevLon,c.latitude,c.longitude);if(d<.5)totalDist+=d}prevLat=c.latitude;prevLon=c.longitude;if(c.altitude!=null){if(c.altitude<minAlt)minAlt=c.altitude;if(c.altitude>maxAlt)maxAlt=c.altitude}sH.push(spd);if(sH.length>H)sH.shift();aH.push(c.altitude||0);if(aH.length>H)aH.shift();if(first){buildOnce();$('LS').style.display='none';$('DS').style.display='block';initMap(c.latitude,c.longitude)}upd(c)}
+function proc(raw){const first=!gps;lu=new Date();const c=mode==='live'?sm.upd(raw):{latitude:raw.latitude,longitude:raw.longitude,speed:toKmh(raw.speed),heading:raw.heading,altitude:raw.altitude,accuracy:raw.accuracy};gps=c;const spd=c.speed;
+  if(recording){if(spd>.5){sS+=spd;sC++}if(spd>mxS)mxS=spd;if(prevLat!=null&&prevLon!=null&&spd>1){const d=haversine(prevLat,prevLon,c.latitude,c.longitude);if(d<.5)totalDist+=d}if(c.altitude!=null){if(c.altitude<minAlt)minAlt=c.altitude;if(c.altitude>maxAlt)maxAlt=c.altitude}}
+  prevLat=c.latitude;prevLon=c.longitude;sH.push(spd);if(sH.length>H)sH.shift();aH.push(c.altitude||0);if(aH.length>H)aH.shift();if(first){buildOnce();$('LS').style.display='none';$('DS').style.display='block';initMap(c.latitude,c.longitude)}upd(c)}
 
 function resetAll(){gps=null;sH=[];aH=[];mxS=0;sS=0;sC=0;lu=null;sm.rst();totalDist=0;prevLat=null;prevLon=null;minAlt=Infinity;maxAlt=-Infinity;if(leafMap){leafMap.remove();leafMap=null;leafMarker=null}mapInited=false}
 
-function startL(){if(!navigator.geolocation){$('lMsg').textContent='Geolocation nicht unterstützt.';return}$('LS').style.display='block';$('DS').style.display='none';$('lMsg').textContent='GPS-Signal wird gesucht…';$('hCard').style.display='none';reqWL();if(!ldA())startSess();renderLog();wId=navigator.geolocation.watchPosition(p=>proc(p.coords),e=>{if(e.code===1){$('lMsg').textContent='Standortzugriff verweigert.';$('hCard').style.display='block';$('hCard').innerHTML=`<div class="hc"><h3>📡 GPS blockiert</h3><p>So behebst du das:</p><ol><li>Tippe auf das <b>🔒 Schloss</b> in der Adressleiste</li><li><b>Berechtigungen → Standort → Zulassen</b></li><li>Seite neu laden</li></ol><p style="margin-top:8px"><b>Tipp:</b> file://-URLs unterstützen kein GPS. Nutze GitHub Pages oder den Demo-Modus!</p><button class="rb" onclick="rGps()">🔄 Erneut versuchen</button></div>`}else $('lMsg').textContent=e.code===2?'GPS nicht verfügbar.':'Positionsfehler.'},{enableHighAccuracy:true,maximumAge:1000,timeout:10000})}
+function startL(){if(!navigator.geolocation){$('lMsg').textContent='Geolocation nicht unterstützt.';return}$('LS').style.display='block';$('DS').style.display='none';$('lMsg').textContent='GPS-Signal wird gesucht…';$('hCard').style.display='none';if(recording){reqWL();if(!ldA())startSess()}renderLog();wId=navigator.geolocation.watchPosition(p=>proc(p.coords),e=>{if(e.code===1){$('lMsg').textContent='Standortzugriff verweigert.';$('hCard').style.display='block';$('hCard').innerHTML=`<div class="hc"><h3>📡 GPS blockiert</h3><p>So behebst du das:</p><ol><li>Tippe auf das <b>🔒 Schloss</b> in der Adressleiste</li><li><b>Berechtigungen → Standort → Zulassen</b></li><li>Seite neu laden</li></ol><p style="margin-top:8px"><b>Tipp:</b> file://-URLs unterstützen kein GPS. Nutze GitHub Pages oder den Demo-Modus!</p><button class="rb" onclick="rGps()">🔄 Erneut versuchen</button></div>`}else $('lMsg').textContent=e.code===2?'GPS nicht verfügbar.':'Positionsfehler.'},{enableHighAccuracy:true,maximumAge:1000,timeout:10000})}
 function stopL(){if(wId!=null){navigator.geolocation.clearWatch(wId);wId=null}}
 function startD(){dT=0;startSess();proc(dGps(0));dIv=setInterval(()=>{dT++;proc(dGps(dT))},1000);renderLog()}
 function stopD(){if(dIv){clearInterval(dIv);dIv=null}}
