@@ -28,20 +28,8 @@ body::before{content:'';position:fixed;inset:0;opacity:0.025;pointer-events:none
 .mbtn{font-family:var(--sans);font-size:11px;font-weight:600;padding:7px 18px;border:1px solid var(--gold-dim);background:transparent;color:var(--dim);cursor:pointer;letter-spacing:1px;transition:all .3s;-webkit-tap-highlight-color:transparent}
 .mbtn:first-child{border-radius:20px 0 0 20px}.mbtn:last-child{border-radius:0 20px 20px 0}
 .mbtn.on{background:rgba(201,168,76,0.15);color:var(--gold);border-color:var(--gold)}
-
-.crd{
-  background:rgba(12,22,45,0.92);
-  border:1px solid var(--gold-dim);
-  border-radius:18px;
-  padding:16px 18px;
-  margin-bottom:14px;
-  box-shadow:0 4px 30px rgba(0,0,0,.45),inset 0 1px 0 var(--gold-glow);
-  animation:fu .5s ease-out both;
-  will-change:transform;
-  transform:translateZ(0);
-}
+.crd{background:rgba(12,22,45,0.92);border:1px solid var(--gold-dim);border-radius:18px;padding:16px 18px;margin-bottom:14px;box-shadow:0 4px 30px rgba(0,0,0,.45),inset 0 1px 0 var(--gold-glow);animation:fu .5s ease-out both;will-change:transform;transform:translateZ(0)}
 .crd:nth-child(1){animation-delay:.05s}.crd:nth-child(2){animation-delay:.1s}.crd:nth-child(3){animation-delay:.15s}.crd:nth-child(4){animation-delay:.2s}
-
 .cl{display:flex;align-items:center;gap:7px;margin-bottom:12px;font-size:11px;font-weight:600;color:var(--gold);letter-spacing:2.2px;text-transform:uppercase}
 .mn{font-family:var(--mono)}.bn{font-size:28px;font-weight:700;line-height:1.2}
 .mn17{font-family:var(--mono);font-size:17px;font-weight:700;line-height:1.6}
@@ -52,16 +40,7 @@ body::before{content:'';position:fixed;inset:0;opacity:0.025;pointer-events:none
 .skl{font-size:9px;color:var(--dim);margin-bottom:3px}
 .ct2{position:absolute;top:0;right:0;font-size:10px;color:var(--green);font-weight:600;opacity:0;transition:opacity .3s}.ct2.on{opacity:1}
 .pd{cursor:pointer;position:relative;-webkit-tap-highlight-color:transparent}
-
-.bar{
-  position:fixed;bottom:0;left:0;right:0;
-  background:rgba(8,16,35,0.97);
-  border-top:1px solid var(--gold-dim);
-  padding:9px 18px;display:flex;justify-content:space-between;align-items:center;
-  max-width:430px;margin:0 auto;z-index:10;
-  padding-bottom:max(9px,env(safe-area-inset-bottom));
-  will-change:transform;transform:translateZ(0);
-}
+.bar{position:fixed;bottom:0;left:0;right:0;background:rgba(8,16,35,0.97);border-top:1px solid var(--gold-dim);padding:9px 18px;display:flex;justify-content:space-between;align-items:center;max-width:430px;margin:0 auto;z-index:10;padding-bottom:max(9px,env(safe-area-inset-bottom));will-change:transform;transform:translateZ(0)}
 .adot{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:5px}
 .stx{font-size:10px;color:var(--dim)}
 .lw{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:55vh;gap:22px}
@@ -75,61 +54,59 @@ body::before{content:'';position:fixed;inset:0;opacity:0.025;pointer-events:none
 @keyframes sw2{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 .rsw{animation:sw2 2s linear infinite;transform-origin:60px 60px}
 @keyframes fu{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-@keyframes pulse-ring{0%{transform:scale(1);opacity:.6}100%{transform:scale(2.5);opacity:0}}
-
 svg{will-change:transform;transform:translateZ(0)}
 canvas{will-change:transform;transform:translateZ(0)}
-
-/* ═══ MAP CONTAINER ═══ */
 #mapBox{width:100%;height:280px;border-radius:12px;overflow:hidden;position:relative;border:1px solid var(--gold-dim);margin-top:10px}
 #mapDiv{width:100%;height:100%}
-#mapDiv .leaflet-tile-pane{filter:none !important}
-.leaflet-container{background:#0A1628 !important}
-
-/* ═══ ALTITUDE - Aircraft Drum Altimeter ═══ */
-.alt-drum{position:relative;display:flex;align-items:center;gap:14px;padding:8px 0}
-.alt-gauge{position:relative;width:140px;height:140px;flex-shrink:0}
+.leaflet-container{background:#f2efe9 !important}
+.alt-drum{display:flex;align-items:center;gap:14px;padding:8px 0}
+.alt-gauge{width:140px;height:140px;flex-shrink:0}
 .alt-ring{transition:stroke-dashoffset 0.8s ease-out}
-.alt-center{text-align:center;margin-top:-4px}
-.alt-val{font-family:var(--mono);font-size:32px;font-weight:700;color:var(--white);line-height:1}
-.alt-unit{font-size:11px;color:var(--dim);margin-top:2px}
 .alt-info{flex:1;display:flex;flex-direction:column;gap:8px}
 .alt-row{display:flex;justify-content:space-between;align-items:center;padding:6px 10px;background:rgba(255,255,255,0.03);border-radius:8px;border:1px solid rgba(255,255,255,0.04)}
 .alt-lbl{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:1px}
 .alt-v{font-family:var(--mono);font-size:14px;font-weight:700}
-.alt-v.ft{color:var(--cyan)}
-.alt-v.mn{color:var(--green)}
-.alt-v.mx{color:var(--gold)}
-.alt-zone{display:inline-block;padding:2px 8px;border-radius:6px;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase}
-
-/* ═══ HEADING - Heading Tape / HUD ═══ */
+.alt-v.ft{color:var(--cyan)}.alt-v.mn{color:var(--green)}.alt-v.mx{color:var(--gold)}
 .hdg-hud{position:relative;overflow:hidden}
 .hdg-tape-wrap{position:relative;width:100%;height:56px;overflow:hidden;border-radius:10px;background:rgba(0,0,0,0.3);border:1px solid var(--gold-dim)}
-.hdg-tape-inner{position:relative;height:100%;white-space:nowrap;transition:transform 0.5s cubic-bezier(.25,.46,.45,.94)}
 .hdg-pointer{position:absolute;top:0;left:50%;transform:translateX(-50%);width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-top:10px solid var(--cyan);z-index:3;filter:drop-shadow(0 0 5px var(--cyan))}
-.hdg-pointer-bot{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-bottom:8px solid var(--cyan);z-index:3;filter:drop-shadow(0 0 5px var(--cyan))}
+.hdg-pointer-bot{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-bottom:8px solid var(--cyan);z-index:3}
 .hdg-center-line{position:absolute;top:10px;bottom:8px;left:50%;width:1px;background:var(--cyan);opacity:0.3;transform:translateX(-50%);z-index:2}
 .hdg-big{text-align:center;margin-top:14px}
 .hdg-deg{font-family:var(--mono);font-size:42px;font-weight:700;color:var(--white);line-height:1}
 .hdg-dir{font-size:18px;font-weight:600;color:var(--cyan);margin-top:4px;letter-spacing:2px}
 .hdg-compass-mini{display:flex;justify-content:center;margin-top:14px}
-
-/* ═══ DISTANCE ROW ═══ */
 .dist-row{display:flex;gap:8px;margin-top:10px}
 .dist-box{flex:1;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05);border-radius:10px;padding:8px 10px;text-align:center}
 .dist-val{font-family:var(--mono);font-size:16px;font-weight:700;color:var(--white)}
 .dist-lbl{font-size:9px;color:var(--dim);margin-top:2px;text-transform:uppercase;letter-spacing:1px}
-
-/* ═══ WAKE LOCK INDICATOR ═══ */
 .wl-badge{display:inline-flex;align-items:center;gap:4px;font-size:9px;color:var(--green);opacity:0;transition:opacity .3s}
 .wl-badge.on{opacity:1}
 .wl-dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:wl-blink 2s ease-in-out infinite}
 @keyframes wl-blink{0%,100%{opacity:1}50%{opacity:0.3}}
+.log-card{background:rgba(12,22,45,0.92);border:1px solid var(--gold-dim);border-radius:18px;padding:16px 18px;margin-bottom:14px;box-shadow:0 4px 30px rgba(0,0,0,.45)}
+.log-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.log-title span{font-size:11px;font-weight:600;color:var(--gold);letter-spacing:2.2px;text-transform:uppercase}
+.log-clear{font-family:var(--sans);font-size:10px;color:var(--red);background:rgba(255,77,77,0.1);border:1px solid rgba(255,77,77,0.2);border-radius:8px;padding:4px 10px;cursor:pointer}
+.log-item{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:12px;padding:12px 14px;margin-bottom:10px;position:relative}
+.log-item:last-child{margin-bottom:0}
+.log-dates{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:4px}
+.log-date{font-size:10px;color:var(--dim)}
+.log-date b{color:var(--cyan);font-weight:600}
+.log-arrow{color:var(--gold);font-size:10px;margin:0 4px}
+.log-stats{display:flex;gap:6px;flex-wrap:wrap}
+.log-stat{flex:1;min-width:70px;background:rgba(255,255,255,0.03);border-radius:8px;padding:6px 8px;text-align:center}
+.log-stat-val{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--white)}
+.log-stat-lbl{font-size:8px;color:var(--dim);margin-top:1px;text-transform:uppercase;letter-spacing:.5px}
+.log-del{position:absolute;top:8px;right:10px;font-size:16px;color:var(--dim);cursor:pointer;padding:4px;line-height:1;opacity:0.5;transition:opacity .2s;-webkit-tap-highlight-color:transparent}
+.log-del:active{opacity:1;color:var(--red)}
+.log-active{border-color:var(--green);box-shadow:0 0 12px rgba(52,211,153,0.15)}
+.log-active-badge{display:inline-block;background:rgba(52,211,153,0.15);color:var(--green);font-size:8px;font-weight:700;letter-spacing:1px;padding:2px 8px;border-radius:6px;border:1px solid rgba(52,211,153,0.3);animation:wl-blink 2s ease-in-out infinite}
+.log-empty{text-align:center;padding:20px;color:var(--dim);font-size:12px}
 </style>
 </head>
 <body>
 <div id="app">
-
 <div class="hdr">
 <svg width="74" height="74" viewBox="0 0 100 100" style="filter:drop-shadow(0 0 14px rgba(201,168,76,.45))">
 <defs><radialGradient id="iBg" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#162240"/><stop offset="100%" stop-color="#0A1628"/></radialGradient><linearGradient id="iG" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#E0C060"/><stop offset="100%" stop-color="#A08030"/></linearGradient></defs>
@@ -140,427 +117,142 @@ canvas{will-change:transform;transform:translateZ(0)}
 <text x="50" y="53" text-anchor="middle" dominant-baseline="central" fill="#C9A84C" font-size="16" font-weight="800" font-family="Georgia,serif" letter-spacing="1">TW</text>
 </svg>
 <div class="t">TW Navigator<span class="dbadge" id="dB">Demo</span></div>
-<div class="s">Maritime Precision Instruments <span class="wl-badge" id="wlB"><span class="wl-dot"></span>WAKE LOCK</span></div>
+<div class="s">Maritime Precision Instruments <span class="wl-badge" id="wlB"><span class="wl-dot"></span>AKTIV</span></div>
 </div>
-
 <div class="mbar">
 <button class="mbtn on" id="bL" onclick="swM('live')">📡 LIVE GPS</button>
 <button class="mbtn" id="bD" onclick="swM('demo')">🎮 DEMO</button>
 </div>
-
-<div id="LS">
-<div class="lw">
+<div id="LS"><div class="lw">
 <svg width="120" height="120" viewBox="0 0 120 120"><circle cx="60" cy="60" r="50" fill="none" stroke="rgba(201,168,76,.25)" stroke-width="1"/><circle cx="60" cy="60" r="35" fill="none" stroke="rgba(201,168,76,.25)" stroke-width=".5"/><circle cx="60" cy="60" r="20" fill="none" stroke="rgba(201,168,76,.25)" stroke-width=".5"/><circle cx="60" cy="60" r="2" fill="#C9A84C"/><g class="rsw"><line x1="60" y1="60" x2="60" y2="10" stroke="#00D4FF" stroke-width="1.5" opacity=".8"/><path d="M60,60 L60,10 A50,50 0 0,1 95,25 Z" fill="rgba(0,212,255,.15)" opacity=".35"/></g></svg>
 <div class="lm" id="lMsg">GPS-Signal wird gesucht…</div>
 <div class="lh">Tippe auf <b>🎮 DEMO</b> um die App mit simulierten Daten zu testen.</div>
-</div>
-<div id="hCard" style="display:none"></div>
-</div>
+</div><div id="hCard" style="display:none"></div></div>
 
 <div id="DS" style="display:none">
-
-<!-- ═══════════ POSITION CARD (LARGE) ═══════════ -->
 <div class="crd"><div class="cl"><span>📍</span> Position</div>
 <div class="pd" id="pD"><div class="mn17" id="vLat">—</div><div class="mn17" id="vLon">—</div><div class="sm" style="margin-top:3px" id="vLL">—</div><div class="ct2" id="cT">✓ Kopiert</div></div>
-<div id="mapBox">
-<div id="mapDiv"></div>
-</div>
-</div>
+<div id="mapBox"><div id="mapDiv"></div></div></div>
 
-<!-- ═══════════ SPEED CARD ═══════════ -->
 <div class="crd"><div class="cl"><span>🚀</span> Geschwindigkeit</div>
-<svg id="sS" viewBox="0 0 180 130" style="width:100%;max-width:270px;display:block;margin:0 auto">
-<g id="sBg"></g>
-<path id="sArc" fill="none" stroke="var(--cyan)" stroke-width="14" stroke-linecap="round" style="filter:drop-shadow(0 0 7px var(--cyan))" d="M0,0"/>
-<g id="sTk"></g>
-<polygon id="sNd" fill="var(--gold)" style="filter:drop-shadow(0 0 4px var(--gold))"/>
-<circle cx="90" cy="90" r="5" fill="var(--bg)" stroke="var(--gold)" stroke-width="1.5"/>
-<text id="sVt" x="90" y="118" text-anchor="middle" fill="var(--white)" font-size="21" font-weight="700" font-family="var(--mono)">0.0</text>
-<text x="90" y="128" text-anchor="middle" fill="var(--dim)" font-size="8" font-family="var(--sans)">km/h</text>
-</svg>
+<svg id="sS" viewBox="0 0 180 130" style="width:100%;max-width:270px;display:block;margin:0 auto"><g id="sBg"></g><path id="sArc" fill="none" stroke="var(--cyan)" stroke-width="14" stroke-linecap="round" style="filter:drop-shadow(0 0 7px var(--cyan))" d="M0,0"/><g id="sTk"></g><polygon id="sNd" fill="var(--gold)" style="filter:drop-shadow(0 0 4px var(--gold))"/><circle cx="90" cy="90" r="5" fill="var(--bg)" stroke="var(--gold)" stroke-width="1.5"/><text id="sVt" x="90" y="118" text-anchor="middle" fill="var(--white)" font-size="21" font-weight="700" font-family="var(--mono)">0.0</text><text x="90" y="128" text-anchor="middle" fill="var(--dim)" font-size="8" font-family="var(--sans)">km/h</text></svg>
 <div class="rw ct g24" style="margin-top:8px">
 <div class="sb"><div class="sbl">Knoten</div><div class="sv cy" id="vKn">0.0 kn</div></div>
 <div class="sb"><div class="sbl">Max</div><div class="sv gd" id="vMx">0.0 km/h</div></div>
-<div class="sb"><div class="sbl">Ø</div><div class="sv" id="vAv">0.0 km/h</div></div>
-</div>
-<!-- DISTANCE -->
+<div class="sb"><div class="sbl">Ø</div><div class="sv" id="vAv">0.0 km/h</div></div></div>
 <div class="dist-row">
 <div class="dist-box"><div class="dist-val" id="vDkm">0.000</div><div class="dist-lbl">Kilometer</div></div>
-<div class="dist-box"><div class="dist-val" id="vDnm">0.000</div><div class="dist-lbl">Seemeilen</div></div>
-</div>
-<div style="margin-top:10px"><div class="skl">Geschwindigkeit (60s)</div><canvas id="cSp" height="40" style="width:100%;height:40px"></canvas></div>
-</div>
+<div class="dist-box"><div class="dist-val" id="vDnm">0.000</div><div class="dist-lbl">Seemeilen</div></div></div>
+<div style="margin-top:10px"><div class="skl">Geschwindigkeit (60s)</div><canvas id="cSp" height="40" style="width:100%;height:40px"></canvas></div></div>
 
-<!-- ═══════════ ALTITUDE CARD (NEW DESIGN - Ring Gauge) ═══════════ -->
 <div class="crd"><div class="cl"><span>📐</span> Höhe</div>
-<div class="alt-drum">
-<div class="alt-gauge">
-<svg viewBox="0 0 140 140" style="width:100%;height:100%">
-<defs>
-<linearGradient id="altGrad" x1="0" y1="1" x2="0" y2="0">
-<stop offset="0%" stop-color="#1E40AF"/>
-<stop offset="35%" stop-color="#059669"/>
-<stop offset="70%" stop-color="#C9A84C"/>
-<stop offset="100%" stop-color="#78350F"/>
-</linearGradient>
-</defs>
-<!-- Background ring: circumference=364.42, 270deg arc=273.32, gap=91.11 -->
-<circle cx="70" cy="70" r="58" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="12" stroke-linecap="round"
-  stroke-dasharray="273.32 91.11" transform="rotate(135 70 70)"/>
-<!-- Active ring -->
-<circle id="altRing" cx="70" cy="70" r="58" fill="none" stroke="url(#altGrad)" stroke-width="12" stroke-linecap="round"
-  stroke-dasharray="273.32 91.11" stroke-dashoffset="273.32" transform="rotate(135 70 70)" class="alt-ring"/>
-<!-- Tick marks -->
+<div class="alt-drum"><div class="alt-gauge"><svg viewBox="0 0 140 140" style="width:100%;height:100%"><defs><linearGradient id="altGrad" x1="0" y1="1" x2="0" y2="0"><stop offset="0%" stop-color="#1E40AF"/><stop offset="35%" stop-color="#059669"/><stop offset="70%" stop-color="#C9A84C"/><stop offset="100%" stop-color="#78350F"/></linearGradient></defs>
+<circle cx="70" cy="70" r="58" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="12" stroke-linecap="round" stroke-dasharray="273.32 91.11" transform="rotate(135 70 70)"/>
+<circle id="altRing" cx="70" cy="70" r="58" fill="none" stroke="url(#altGrad)" stroke-width="12" stroke-linecap="round" stroke-dasharray="273.32 91.11" stroke-dashoffset="273.32" transform="rotate(135 70 70)" class="alt-ring"/>
 <g id="altTicks"></g>
-<!-- Center display -->
 <text id="altValSvg" x="70" y="64" text-anchor="middle" dominant-baseline="central" fill="var(--white)" font-size="26" font-weight="700" font-family="var(--mono)">—</text>
-<text x="70" y="82" text-anchor="middle" fill="var(--dim)" font-size="9" font-family="var(--sans)">m ü. NHN</text>
-<!-- Zone badge -->
-<text id="altZone" x="70" y="108" text-anchor="middle" fill="var(--cyan)" font-size="8" font-weight="700" font-family="var(--sans)" letter-spacing="1.5">—</text>
-</svg>
-</div>
+<text x="70" y="82" text-anchor="middle" fill="var(--dim)" font-size="9">m ü. NHN</text>
+<text id="altZone" x="70" y="108" text-anchor="middle" fill="var(--cyan)" font-size="8" font-weight="700" letter-spacing="1.5">—</text></svg></div>
 <div class="alt-info">
 <div class="alt-row"><span class="alt-lbl">Feet</span><span class="alt-v ft" id="vAf2">—</span></div>
 <div class="alt-row"><span class="alt-lbl">Min</span><span class="alt-v mn" id="vAmn">—</span></div>
 <div class="alt-row"><span class="alt-lbl">Max</span><span class="alt-v mx" id="vAmx">—</span></div>
-<div class="alt-row"><span class="alt-lbl">Δ Diff</span><span class="alt-v" id="vAdf" style="color:var(--white)">—</span></div>
-</div>
-</div>
-<div style="margin-top:10px"><div class="skl">Höhenverlauf (60s)</div><canvas id="cAl" height="40" style="width:100%;height:40px"></canvas></div>
-</div>
+<div class="alt-row"><span class="alt-lbl">Δ Diff</span><span class="alt-v" id="vAdf" style="color:var(--white)">—</span></div></div></div>
+<div style="margin-top:10px"><div class="skl">Höhenverlauf (60s)</div><canvas id="cAl" height="40" style="width:100%;height:40px"></canvas></div></div>
 
-<!-- ═══════════ HEADING CARD (NEW DESIGN - Heading Tape HUD) ═══════════ -->
 <div class="crd"><div class="cl"><span>🧭</span> Kurs / Heading</div>
-<div class="hdg-hud">
-<!-- Heading Tape -->
-<div class="hdg-tape-wrap">
-<div class="hdg-pointer"></div>
-<div class="hdg-pointer-bot"></div>
-<div class="hdg-center-line"></div>
-<canvas id="hdgTape" height="56" style="width:100%;height:56px"></canvas>
-</div>
-<!-- Big readout -->
-<div class="hdg-big">
-<div class="hdg-deg" id="vHd2">—</div>
-<div class="hdg-dir" id="vHt2">Kein Kurs</div>
-</div>
-<!-- Mini compass SVG -->
-<div class="hdg-compass-mini">
-<svg viewBox="0 0 120 120" style="width:100px;height:100px">
-<circle cx="60" cy="60" r="55" fill="none" stroke="var(--gold-dim)" stroke-width="0.5"/>
-<circle cx="60" cy="60" r="45" fill="rgba(10,22,40,.4)" stroke="rgba(255,255,255,.03)" stroke-width="0.5"/>
-<g id="miniCR"></g>
-<polygon points="60,8 57,3 63,3" fill="var(--cyan)" style="filter:drop-shadow(0 0 3px var(--cyan))"/>
-<circle cx="60" cy="60" r="2" fill="var(--gold)"/>
-</svg>
-</div>
-</div>
-</div>
+<div class="hdg-hud"><div class="hdg-tape-wrap"><div class="hdg-pointer"></div><div class="hdg-pointer-bot"></div><div class="hdg-center-line"></div><canvas id="hdgTape" height="56" style="width:100%;height:56px"></canvas></div>
+<div class="hdg-big"><div class="hdg-deg" id="vHd2">—</div><div class="hdg-dir" id="vHt2">Kein Kurs</div></div>
+<div class="hdg-compass-mini"><svg viewBox="0 0 120 120" style="width:100px;height:100px"><circle cx="60" cy="60" r="55" fill="none" stroke="var(--gold-dim)" stroke-width="0.5"/><circle cx="60" cy="60" r="45" fill="rgba(10,22,40,.4)" stroke="rgba(255,255,255,.03)" stroke-width="0.5"/><g id="miniCR"></g><polygon points="60,8 57,3 63,3" fill="var(--cyan)" style="filter:drop-shadow(0 0 3px var(--cyan))"/><circle cx="60" cy="60" r="2" fill="var(--gold)"/></svg></div></div></div>
 
-</div><!-- /DS -->
-</div><!-- /app -->
+<div class="log-card"><div class="log-title"><span>📋 Fahrtenbuch</span><button class="log-clear" id="logClearAll" onclick="clearAllTrips()">Alle löschen</button></div><div id="tripLog"></div></div>
+</div></div>
 
 <div class="bar"><div id="stL"></div><div class="stx" id="stT">Warte auf GPS…</div></div>
 
 <script>
 const H=60,$=id=>document.getElementById(id),clamp=(v,a,b)=>Math.min(Math.max(v,a),b);
-const toKmh=s=>(s||0)*3.6,toKn=s=>(s||0)*1.94384,toFt=m=>(m||0)*3.28084;
+const toKmh=s=>(s||0)*3.6,toFt=m=>(m||0)*3.28084;
 function toDMS(d,l){const a=Math.abs(d),dg=Math.floor(a),mf=(a-dg)*60,m=Math.floor(mf),s=((mf-m)*60).toFixed(1);return`${l?(d>=0?'N':'S'):(d>=0?'E':'W')} ${dg}° ${String(m).padStart(2,'0')}' ${s.padStart(4,'0')}"`}
 function hTxt(d){if(d==null)return'—';const a=['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'];return a[Math.round(((d%360+360)%360)/22.5)%16]}
+function fmtDT(d){return d.toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric'})+' '+d.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})}
+function haversine(a1,o1,a2,o2){const R=6371,dL=(a2-a1)*Math.PI/180,dO=(o2-o1)*Math.PI/180,x=Math.sin(dL/2)**2+Math.cos(a1*Math.PI/180)*Math.cos(a2*Math.PI/180)*Math.sin(dO/2)**2;return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x))}
 
-// ══ SMOOTHING ══
 const sm={speed:null,heading:null,altitude:null,lat:null,lon:null,
-  AS:0.25,AH:0.2,AA:0.3,AP:0.4,DZ:1.5,HMS:2.0,
-  upd(r){
-    const rs=toKmh(r.speed),si=rs<this.DZ?0:rs;
-    if(this.speed===null)this.speed=si;else this.speed+=this.AS*(si-this.speed);
-    if(this.speed<0.3)this.speed=0;
-    if(r.altitude!=null){if(this.altitude===null)this.altitude=r.altitude;else this.altitude+=this.AA*(r.altitude-this.altitude)}
-    if(r.heading!=null&&rs>=this.HMS){if(this.heading===null)this.heading=r.heading;else{let d=r.heading-this.heading;if(d>180)d-=360;if(d<-180)d+=360;this.heading=((this.heading+this.AH*d)%360+360)%360}}
-    if(this.lat===null){this.lat=r.latitude;this.lon=r.longitude}else{this.lat+=this.AP*(r.latitude-this.lat);this.lon+=this.AP*(r.longitude-this.lon)}
-    return{latitude:this.lat,longitude:this.lon,speed:this.speed,heading:this.heading,altitude:this.altitude,accuracy:r.accuracy}},
+  upd(r){const rs=toKmh(r.speed),si=rs<1.5?0:rs;if(this.speed===null)this.speed=si;else this.speed+=.25*(si-this.speed);if(this.speed<.3)this.speed=0;if(r.altitude!=null){if(this.altitude===null)this.altitude=r.altitude;else this.altitude+=.3*(r.altitude-this.altitude)}if(r.heading!=null&&rs>=2){if(this.heading===null)this.heading=r.heading;else{let d=r.heading-this.heading;if(d>180)d-=360;if(d<-180)d+=360;this.heading=((this.heading+.2*d)%360+360)%360}}if(this.lat===null){this.lat=r.latitude;this.lon=r.longitude}else{this.lat+=.4*(r.latitude-this.lat);this.lon+=.4*(r.longitude-this.lon)}return{latitude:this.lat,longitude:this.lon,speed:this.speed,heading:this.heading,altitude:this.altitude,accuracy:r.accuracy}},
   rst(){this.speed=null;this.heading=null;this.altitude=null;this.lat=null;this.lon=null}};
 
 let mode='live',gps=null,lu=null,sH=[],aH=[],mxS=0,sS=0,sC=0,wId=null,dIv=null,dT=0,built=false;
-let totalDist=0,prevLat=null,prevLon=null;
-let minAlt=Infinity,maxAlt=-Infinity;
-let wakeLock=null;
-let mapInited=false,mapPaused=false,mapPauseTimer=null;
+let totalDist=0,prevLat=null,prevLon=null,minAlt=Infinity,maxAlt=-Infinity;
+let wakeLock=null,mapInited=false,leafMap=null,leafMarker=null,mapPF=false,mapPT=null;
 
-// ══ DISTANCE CALCULATION (Haversine) ══
-function haversine(lat1,lon1,lat2,lon2){
-  const R=6371,dLat=(lat2-lat1)*Math.PI/180,dLon=(lon2-lon1)*Math.PI/180;
-  const a=Math.sin(dLat/2)**2+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;
-  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
-}
+/* ══ SESSION LOGGING ══ */
+const TK='twn_trips',AK='twn_active';
+let aS=null; // active session
+function ldT(){try{return JSON.parse(localStorage.getItem(TK))||[]}catch(e){return[]}}
+function svT(t){localStorage.setItem(TK,JSON.stringify(t))}
+function startSess(){aS={id:Date.now(),st:new Date().toISOString(),et:null,km:0,nm:0,mx:0,av:0,_ss:0,_sc:0};svA()}
+function svA(){if(aS)localStorage.setItem(AK,JSON.stringify(aS))}
+function ldA(){try{const s=JSON.parse(localStorage.getItem(AK));if(s&&!s.et){aS=s;totalDist=s.km||0;mxS=s.mx||0;sS=s._ss||0;sC=s._sc||0;return true}}catch(e){}return false}
+function updSess(){if(!aS)return;aS.km=totalDist;aS.nm=totalDist*.539957;aS.mx=mxS;aS._ss=sS;aS._sc=sC;aS.av=sC>0?sS/sC:0;svA()}
+function endSess(){if(!aS)return;aS.et=new Date().toISOString();aS.km=totalDist;aS.nm=totalDist*.539957;aS.mx=mxS;aS.av=sC>0?sS/sC:0;delete aS._ss;delete aS._sc;if(aS.km>.001||aS.mx>1){const t=ldT();t.unshift(aS);if(t.length>50)t.length=50;svT(t)}aS=null;localStorage.removeItem(AK);renderLog()}
+window.delTrip=function(id){svT(ldT().filter(t=>t.id!==id));renderLog()};
+window.clearAllTrips=function(){if(confirm('Alle gespeicherten Fahrten löschen?')){svT([]);renderLog()}};
+function renderLog(){const el=$('tripLog');if(!el)return;let h='';
+  if(aS){const s=new Date(aS.st);h+=`<div class="log-item log-active"><div class="log-dates"><span class="log-date"><b>${fmtDT(s)}</b></span><span class="log-active-badge">● AUFZEICHNUNG</span></div><div class="log-stats"><div class="log-stat"><div class="log-stat-val">${totalDist.toFixed(3)}</div><div class="log-stat-lbl">km</div></div><div class="log-stat"><div class="log-stat-val">${(totalDist*.539957).toFixed(3)}</div><div class="log-stat-lbl">nm</div></div><div class="log-stat"><div class="log-stat-val">${mxS.toFixed(1)}</div><div class="log-stat-lbl">Max km/h</div></div></div></div>`}
+  const trips=ldT();
+  if(!trips.length&&!aS){h='<div class="log-empty">Noch keine Fahrten aufgezeichnet</div>'}
+  else{trips.forEach(t=>{const s=new Date(t.st),e=t.et?new Date(t.et):null;h+=`<div class="log-item"><span class="log-del" onclick="delTrip(${t.id})">✕</span><div class="log-dates"><span class="log-date"><b>${fmtDT(s)}</b></span><span class="log-arrow">→</span><span class="log-date"><b>${e?fmtDT(e):'—'}</b></span></div><div class="log-stats"><div class="log-stat"><div class="log-stat-val">${(t.km||0).toFixed(3)}</div><div class="log-stat-lbl">km</div></div><div class="log-stat"><div class="log-stat-val">${(t.nm||0).toFixed(3)}</div><div class="log-stat-lbl">nm</div></div><div class="log-stat"><div class="log-stat-val">${(t.mx||0).toFixed(1)}</div><div class="log-stat-lbl">Max km/h</div></div></div></div>`})}
+  el.innerHTML=h}
 
-// ══ WAKE LOCK (keep app running with screen off) ══
-async function requestWakeLock(){
-  try{
-    if('wakeLock' in navigator){
-      wakeLock=await navigator.wakeLock.request('screen');
-      $('wlB').classList.add('on');
-      wakeLock.addEventListener('release',()=>{$('wlB').classList.remove('on');wakeLock=null});
-    }
-  }catch(e){console.log('Wake Lock failed:',e)}
-}
-// Re-acquire wake lock when page becomes visible again
-document.addEventListener('visibilitychange',()=>{
-  if(document.visibilityState==='visible'&&!wakeLock)requestWakeLock();
-});
+/* ══ WAKE LOCK ══ */
+async function reqWL(){try{if('wakeLock' in navigator){wakeLock=await navigator.wakeLock.request('screen');$('wlB').classList.add('on');wakeLock.addEventListener('release',()=>{$('wlB').classList.remove('on');wakeLock=null})}}catch(e){}}
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&!wakeLock)reqWL();updSess()});
+setInterval(()=>{updSess();renderLog()},5000);
+window.addEventListener('beforeunload',()=>endSess());
+window.addEventListener('pagehide',()=>endSess());
 
-// ══ DEMO GPS ══
-function dGps(t){const b=t*0.02;return{latitude:50.705+Math.sin(b*.7)*.008+Math.cos(b*.3)*.004,longitude:7.895+Math.cos(b*.5)*.012+Math.sin(b*.8)*.003,speed:Math.max(0,6+Math.sin(b*1.2)*4+Math.cos(b*2.5)*2.5+Math.sin(b*.3)*3)/3.6,heading:(((b*40)+Math.sin(b*.8)*60+Math.cos(b*1.5)*30)%360+360)%360,altitude:180+Math.sin(b*.4)*80+Math.cos(b*.9)*40,accuracy:3+Math.random()*2}}
+/* ══ DEMO GPS ══ */
+function dGps(t){const b=t*.02;return{latitude:50.705+Math.sin(b*.7)*.008+Math.cos(b*.3)*.004,longitude:7.895+Math.cos(b*.5)*.012+Math.sin(b*.8)*.003,speed:Math.max(0,6+Math.sin(b*1.2)*4+Math.cos(b*2.5)*2.5+Math.sin(b*.3)*3)/3.6,heading:(((b*40)+Math.sin(b*.8)*60+Math.cos(b*1.5)*30)%360+360)%360,altitude:180+Math.sin(b*.4)*80+Math.cos(b*.9)*40,accuracy:3+Math.random()*2}}
 
-// ══ MAP (Direct Leaflet - no iframe) ══
-let leafMap=null,leafMarker=null,mapPausedFlag=false,mapPauseT=null;
-function initMap(lat,lon){
-  if(mapInited)return;
-  mapInited=true;
-  leafMap=L.map('mapDiv',{zoomControl:false,attributionControl:false}).setView([lat,lon],15);
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{maxZoom:19}).addTo(leafMap);
-  leafMarker=L.circleMarker([lat,lon],{radius:7,color:'#00D4FF',fillColor:'#00D4FF',fillOpacity:0.9,weight:2}).addTo(leafMap);
-  leafMap.on('mousedown touchstart',function(){mapPausedFlag=true;clearTimeout(mapPauseT);mapPauseT=setTimeout(function(){mapPausedFlag=false},10000)});
-  setTimeout(function(){leafMap.invalidateSize()},200);
-}
-function updateMap(lat,lon){
-  if(!mapInited)return initMap(lat,lon);
-  if(leafMarker)leafMarker.setLatLng([lat,lon]);
-  if(leafMap&&!mapPausedFlag)leafMap.panTo([lat,lon],{animate:true,duration:0.5});
-}
+/* ══ MAP ══ */
+function initMap(lat,lon){if(mapInited)return;mapInited=true;leafMap=L.map('mapDiv',{zoomControl:false,attributionControl:false}).setView([lat,lon],15);L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{maxZoom:19}).addTo(leafMap);leafMarker=L.circleMarker([lat,lon],{radius:7,color:'#00D4FF',fillColor:'#00D4FF',fillOpacity:.9,weight:2}).addTo(leafMap);leafMap.on('mousedown touchstart',function(){mapPF=true;clearTimeout(mapPT);mapPT=setTimeout(function(){mapPF=false},10000)});setTimeout(function(){leafMap.invalidateSize()},200)}
+function updateMap(lat,lon){if(!mapInited)return initMap(lat,lon);if(leafMarker)leafMarker.setLatLng([lat,lon]);if(leafMap&&!mapPF)leafMap.panTo([lat,lon],{animate:true,duration:.5})}
 
-// ══ BUILD STATIC ELEMENTS ══
-function buildOnce(){
-  if(built)return;built=true;
+/* ══ BUILD ══ */
+function buildOnce(){if(built)return;built=true;
+  const sA=-135,eA=135,r=70,cx=90,cy=90,p2c=(a,rd)=>({x:cx+rd*Math.cos((a-90)*Math.PI/180),y:cy+rd*Math.sin((a-90)*Math.PI/180)}),arc=(f,t,rd)=>{const s=p2c(f,rd),e=p2c(t,rd);return`M ${s.x} ${s.y} A ${rd} ${rd} 0 ${t-f>180?1:0} 1 ${e.x} ${e.y}`};
+  const bg=$('sBg');[[sA,eA,'rgba(255,255,255,0.05)'],[sA,sA+90,'rgba(52,211,153,0.12)'],[sA+90,sA+180,'rgba(251,191,36,0.12)'],[sA+180,eA,'rgba(255,77,77,0.12)']].forEach(([f,t,c])=>{const p=document.createElementNS('http://www.w3.org/2000/svg','path');p.setAttribute('d',arc(f,t,r));p.setAttribute('fill','none');p.setAttribute('stroke',c);p.setAttribute('stroke-width','14');p.setAttribute('stroke-linecap','round');bg.appendChild(p)});
+  const tk=$('sTk');for(let i=0;i<=12;i++){const a=sA+(i/12)*(eA-sA),inn=p2c(a,r+8),out=p2c(a,r+14),lb=p2c(a,r+23);const l=document.createElementNS('http://www.w3.org/2000/svg','line');l.setAttribute('x1',inn.x);l.setAttribute('y1',inn.y);l.setAttribute('x2',out.x);l.setAttribute('y2',out.y);l.setAttribute('stroke','var(--dim)');l.setAttribute('stroke-width',i%3===0?'1.5':'0.5');tk.appendChild(l);if(i%3===0){const t=document.createElementNS('http://www.w3.org/2000/svg','text');t.setAttribute('x',lb.x);t.setAttribute('y',lb.y);t.setAttribute('text-anchor','middle');t.setAttribute('dominant-baseline','central');t.setAttribute('fill','var(--dim)');t.setAttribute('font-size','7');t.setAttribute('font-family','var(--mono)');t.textContent=Math.round((i/12)*60);tk.appendChild(t)}}
+  const at=$('altTicks');for(let i=0;i<=8;i++){const ag=135+(i/8)*270,rd=ag*Math.PI/180,x1=70+50*Math.cos(rd),y1=70+50*Math.sin(rd),x2=70+55*Math.cos(rd),y2=70+55*Math.sin(rd);const l=document.createElementNS('http://www.w3.org/2000/svg','line');l.setAttribute('x1',x1);l.setAttribute('y1',y1);l.setAttribute('x2',x2);l.setAttribute('y2',y2);l.setAttribute('stroke',i%2===0?'var(--dim)':'rgba(255,255,255,0.15)');l.setAttribute('stroke-width',i%2===0?'1':'.5');at.appendChild(l);if(i%2===0){const t=document.createElementNS('http://www.w3.org/2000/svg','text');t.setAttribute('x',70+62*Math.cos(rd));t.setAttribute('y',70+62*Math.sin(rd));t.setAttribute('text-anchor','middle');t.setAttribute('dominant-baseline','central');t.setAttribute('fill','var(--dim)');t.setAttribute('font-size','6');t.setAttribute('font-family','var(--mono)');t.textContent=Math.round((i/8)*2000);at.appendChild(t)}}
+  const cr=$('miniCR');for(let i=0;i<72;i++){const a=i*5*Math.PI/180,mj=i%18===0,r1=mj?38:(i%9===0?40:43);const l=document.createElementNS('http://www.w3.org/2000/svg','line');l.setAttribute('x1',60+r1*Math.sin(a));l.setAttribute('y1',60-r1*Math.cos(a));l.setAttribute('x2',60+45*Math.sin(a));l.setAttribute('y2',60-45*Math.cos(a));l.setAttribute('stroke',mj?'var(--gold)':'var(--dim)');l.setAttribute('stroke-width',mj?'1':'.3');cr.appendChild(l)}
+  [['N',0,'var(--red)'],['E',90,'var(--gold)'],['S',180,'var(--gold)'],['W',270,'var(--gold)']].forEach(([lb,d,c])=>{const a=d*Math.PI/180,t=document.createElementNS('http://www.w3.org/2000/svg','text');t.setAttribute('x',60+32*Math.sin(a));t.setAttribute('y',60-32*Math.cos(a));t.setAttribute('text-anchor','middle');t.setAttribute('dominant-baseline','central');t.setAttribute('fill',c);t.setAttribute('font-size','9');t.setAttribute('font-weight','800');t.textContent=lb;cr.appendChild(t)});
+  const np=document.createElementNS('http://www.w3.org/2000/svg','polygon');np.setAttribute('points','60,8 57,15 63,15');np.setAttribute('fill','var(--red)');cr.appendChild(np)}
 
-  // Speed gauge
-  const sA=-135,eA=135,r=70,cx=90,cy=90;
-  const p2c=(a,rd)=>({x:cx+rd*Math.cos((a-90)*Math.PI/180),y:cy+rd*Math.sin((a-90)*Math.PI/180)});
-  const arc=(f,t,rd)=>{const s=p2c(f,rd),e=p2c(t,rd),lg=t-f>180?1:0;return`M ${s.x} ${s.y} A ${rd} ${rd} 0 ${lg} 1 ${e.x} ${e.y}`};
-  const bg=$('sBg');
-  [[sA,eA,'rgba(255,255,255,0.05)'],[sA,sA+90,'rgba(52,211,153,0.12)'],[sA+90,sA+180,'rgba(251,191,36,0.12)'],[sA+180,eA,'rgba(255,77,77,0.12)']].forEach(([f,t,c])=>{const p=document.createElementNS('http://www.w3.org/2000/svg','path');p.setAttribute('d',arc(f,t,r));p.setAttribute('fill','none');p.setAttribute('stroke',c);p.setAttribute('stroke-width','14');p.setAttribute('stroke-linecap','round');bg.appendChild(p)});
-  const tk=$('sTk');
-  for(let i=0;i<=12;i++){const a=sA+(i/12)*(eA-sA),inn=p2c(a,r+8),out=p2c(a,r+14),lb=p2c(a,r+23),v=Math.round((i/12)*60);
-    const l=document.createElementNS('http://www.w3.org/2000/svg','line');l.setAttribute('x1',inn.x);l.setAttribute('y1',inn.y);l.setAttribute('x2',out.x);l.setAttribute('y2',out.y);l.setAttribute('stroke','var(--dim)');l.setAttribute('stroke-width',i%3===0?'1.5':'0.5');tk.appendChild(l);
-    if(i%3===0){const t=document.createElementNS('http://www.w3.org/2000/svg','text');t.setAttribute('x',lb.x);t.setAttribute('y',lb.y);t.setAttribute('text-anchor','middle');t.setAttribute('dominant-baseline','central');t.setAttribute('fill','var(--dim)');t.setAttribute('font-size','7');t.setAttribute('font-family','var(--mono)');t.textContent=v;tk.appendChild(t)}}
+function drawSp(id,data,col){const c=$(id);if(!c)return;const ctx=c.getContext('2d'),dpr=window.devicePixelRatio||1,w=c.clientWidth,h=c.clientHeight;if(c.width!==w*dpr||c.height!==h*dpr){c.width=w*dpr;c.height=h*dpr}ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,h);if(!data||data.length<2)return;const mn=Math.min(...data),mx=Math.max(...data),rng=mx-mn||1;ctx.beginPath();ctx.moveTo(0,h);data.forEach((v,i)=>ctx.lineTo((i/(data.length-1))*w,h-((v-mn)/rng)*(h-4)-2));ctx.lineTo(w,h);ctx.closePath();const g=ctx.createLinearGradient(0,0,0,h);g.addColorStop(0,col+'4D');g.addColorStop(1,col+'00');ctx.fillStyle=g;ctx.fill();ctx.beginPath();data.forEach((v,i)=>{const x=(i/(data.length-1))*w,y=h-((v-mn)/rng)*(h-4)-2;i===0?ctx.moveTo(x,y):ctx.lineTo(x,y)});ctx.strokeStyle=col;ctx.lineWidth=1.5;ctx.lineJoin='round';ctx.stroke();const lv=data[data.length-1],ly=h-((lv-mn)/rng)*(h-4)-2;ctx.beginPath();ctx.arc(w,ly,3,0,Math.PI*2);ctx.fillStyle=col;ctx.fill()}
 
-  // Altitude ring ticks
-  const at=$('altTicks');
-  for(let i=0;i<=8;i++){
-    const ang=135+(i/8)*270,rad=ang*Math.PI/180;
-    const x1=70+50*Math.cos(rad),y1=70+50*Math.sin(rad);
-    const x2=70+55*Math.cos(rad),y2=70+55*Math.sin(rad);
-    const l=document.createElementNS('http://www.w3.org/2000/svg','line');
-    l.setAttribute('x1',x1);l.setAttribute('y1',y1);l.setAttribute('x2',x2);l.setAttribute('y2',y2);
-    l.setAttribute('stroke',i%2===0?'var(--dim)':'rgba(255,255,255,0.15)');l.setAttribute('stroke-width',i%2===0?'1':'0.5');
-    at.appendChild(l);
-    if(i%2===0){
-      const t=document.createElementNS('http://www.w3.org/2000/svg','text');
-      const x3=70+62*Math.cos(rad),y3=70+62*Math.sin(rad);
-      t.setAttribute('x',x3);t.setAttribute('y',y3);t.setAttribute('text-anchor','middle');t.setAttribute('dominant-baseline','central');
-      t.setAttribute('fill','var(--dim)');t.setAttribute('font-size','6');t.setAttribute('font-family','var(--mono)');
-      t.textContent=Math.round((i/8)*2000);at.appendChild(t);
-    }
-  }
+function drawHT(hdg){const c=$('hdgTape');if(!c)return;const ctx=c.getContext('2d'),dpr=window.devicePixelRatio||1,w=c.clientWidth,h=c.clientHeight;if(c.width!==w*dpr||c.height!==h*dpr){c.width=w*dpr;c.height=h*dpr}ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,h);const hd=hdg||0,dpx=.7,cx=w/2,dirs={0:'N',45:'NE',90:'E',135:'SE',180:'S',225:'SW',270:'W',315:'NW'};for(let d=-180;d<=540;d++){let o=d-hd;if(o>180)o-=360;if(o<-180)o+=360;const px=cx+o/dpx;if(px<-20||px>w+20)continue;const nd=((d%360)+360)%360;if(nd%10===0){const mj=nd%30===0,th=mj?18:10;ctx.beginPath();ctx.moveTo(px,h);ctx.lineTo(px,h-th);ctx.strokeStyle=mj?'rgba(201,168,76,0.7)':'rgba(232,236,241,0.2)';ctx.lineWidth=mj?1.5:.5;ctx.stroke();if(mj){const dl=dirs[nd];ctx.font=dl?'bold 12px Outfit':'10px JetBrains Mono';ctx.fillStyle=dl?(nd===0?'#FF4D4D':'rgba(201,168,76,0.8)'):'rgba(232,236,241,0.4)';ctx.textAlign='center';ctx.fillText(dl||nd+'°',px,16)}}}}
 
-  // Mini compass
-  const cr=$('miniCR');
-  for(let i=0;i<72;i++){const a=i*5*Math.PI/180,mj=i%18===0,md=i%9===0,r1=mj?38:md?40:43;
-    const l=document.createElementNS('http://www.w3.org/2000/svg','line');l.setAttribute('x1',60+r1*Math.sin(a));l.setAttribute('y1',60-r1*Math.cos(a));l.setAttribute('x2',60+45*Math.sin(a));l.setAttribute('y2',60-45*Math.cos(a));l.setAttribute('stroke',mj?'var(--gold)':'var(--dim)');l.setAttribute('stroke-width',mj?'1':'0.3');cr.appendChild(l)}
-  [['N',0,'var(--red)'],['E',90,'var(--gold)'],['S',180,'var(--gold)'],['W',270,'var(--gold)']].forEach(([lb,d,c])=>{const a=d*Math.PI/180,t=document.createElementNS('http://www.w3.org/2000/svg','text');t.setAttribute('x',60+32*Math.sin(a));t.setAttribute('y',60-32*Math.cos(a));t.setAttribute('text-anchor','middle');t.setAttribute('dominant-baseline','central');t.setAttribute('fill',c);t.setAttribute('font-size','9');t.setAttribute('font-weight','800');t.setAttribute('font-family','var(--sans)');t.textContent=lb;cr.appendChild(t)});
-  const np=document.createElementNS('http://www.w3.org/2000/svg','polygon');np.setAttribute('points','60,8 57,15 63,15');np.setAttribute('fill','var(--red)');cr.appendChild(np);
-}
+function upd(c){const spd=c.speed,kn=spd/3.6*1.94384,alt=c.altitude,hdg=c.heading,avg=sC>0?sS/sC:0;$('vLat').textContent=toDMS(c.latitude,true);$('vLon').textContent=toDMS(c.longitude,false);$('vLL').textContent=`${c.latitude.toFixed(6)}° / ${c.longitude.toFixed(6)}°`;updateMap(c.latitude,c.longitude);
+  const sA2=-135,eA2=135,r2=70,cx2=90,cy2=90,p2c2=(a,rd)=>({x:cx2+rd*Math.cos((a-90)*Math.PI/180),y:cy2+rd*Math.sin((a-90)*Math.PI/180)}),arc2=(f,t,rd)=>{const s=p2c2(f,rd),e=p2c2(t,rd);return`M ${s.x} ${s.y} A ${rd} ${rd} 0 ${t-f>180?1:0} 1 ${e.x} ${e.y}`},pct=clamp(spd/60,0,1),sw2=sA2+pct*(eA2-sA2);$('sArc').setAttribute('d',pct>.005?arc2(sA2,sw2,r2):'M0,0');const tip=p2c2(sw2,r2-10),nA=sw2-90,b1={x:cx2+3*Math.cos((nA+90)*Math.PI/180),y:cy2+3*Math.sin((nA+90)*Math.PI/180)},b2={x:cx2+3*Math.cos((nA-90)*Math.PI/180),y:cy2+3*Math.sin((nA-90)*Math.PI/180)};$('sNd').setAttribute('points',`${tip.x},${tip.y} ${b1.x},${b1.y} ${b2.x},${b2.y}`);$('sVt').textContent=spd.toFixed(1);$('vKn').textContent=kn.toFixed(1)+' kn';$('vMx').textContent=mxS.toFixed(1)+' km/h';$('vAv').textContent=avg.toFixed(1)+' km/h';$('vDkm').textContent=totalDist.toFixed(3);$('vDnm').textContent=(totalDist*.539957).toFixed(3);drawSp('cSp',sH,'#00D4FF');
+  const altV=alt||0,ap=clamp(altV/2000,0,1);$('altRing').style.strokeDashoffset=273.32-(ap*273.32);$('altValSvg').textContent=alt!=null?Math.round(alt):'—';$('vAf2').textContent=alt!=null?Math.round(toFt(alt))+' ft':'—';$('vAmn').textContent=minAlt<Infinity?Math.round(minAlt)+' m':'—';$('vAmx').textContent=maxAlt>-Infinity?Math.round(maxAlt)+' m':'—';const df=maxAlt>-Infinity&&minAlt<Infinity?Math.round(maxAlt-minAlt):null;$('vAdf').textContent=df!=null?'Δ '+df+' m':'—';let zt='KÜSTENNAH',zc='#1E40AF';if(altV>1500){zt='HOCHGEBIRGE';zc='#78350F'}else if(altV>800){zt='GEBIRGE';zc='#C9A84C'}else if(altV>200){zt='HÜGELLAND';zc='#059669'}else if(altV>50){zt='FLACHLAND';zc='#34D399'}$('altZone').textContent=zt;$('altZone').setAttribute('fill',zc);drawSp('cAl',aH,'#34D399');
+  drawHT(hdg);if(hdg!=null){$('vHd2').textContent=Math.round(hdg)+'°';$('vHt2').textContent=hTxt(hdg);$('miniCR').style.transform=`rotate(${-hdg}deg)`;$('miniCR').style.transformOrigin='60px 60px';$('miniCR').style.transition='transform .5s cubic-bezier(.25,.46,.45,.94)'}else{$('vHd2').textContent='—';$('vHt2').textContent='Kein Kurs'}
+  if(c.accuracy!=null){const a=c.accuracy,g=a<10,o=a<30,col=g?'var(--green)':o?'var(--yellow)':'var(--red)';$('stL').innerHTML=`<span class="adot" style="background:${col};box-shadow:0 0 6px ${col}"></span><span style="font-size:10px;color:${col}">±${Math.round(a)}m · ${g?'Exzellent':o?'Gut':'Niedrig'}</span>`}else if(mode==='demo')$('stL').innerHTML='<span style="color:var(--yellow);font-size:10px">🎮 Demo</span>';$('stT').textContent=lu?lu.toLocaleTimeString('de-DE'):'—'}
 
-// ══ SPARKLINE DRAWING ══
-function drawSp(id,data,col){
-  const c=$(id);if(!c)return;const ctx=c.getContext('2d');
-  const dpr=window.devicePixelRatio||1,w=c.clientWidth,h=c.clientHeight;
-  if(c.width!==w*dpr||c.height!==h*dpr){c.width=w*dpr;c.height=h*dpr}
-  ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,h);
-  if(!data||data.length<2)return;
-  const mn=Math.min(...data),mx=Math.max(...data),rng=mx-mn||1;
-  ctx.beginPath();ctx.moveTo(0,h);
-  data.forEach((v,i)=>{ctx.lineTo((i/(data.length-1))*w,h-((v-mn)/rng)*(h-4)-2)});
-  ctx.lineTo(w,h);ctx.closePath();
-  const grd=ctx.createLinearGradient(0,0,0,h);grd.addColorStop(0,col+'4D');grd.addColorStop(1,col+'00');
-  ctx.fillStyle=grd;ctx.fill();
-  ctx.beginPath();
-  data.forEach((v,i)=>{const x=(i/(data.length-1))*w,y=h-((v-mn)/rng)*(h-4)-2;i===0?ctx.moveTo(x,y):ctx.lineTo(x,y)});
-  ctx.strokeStyle=col;ctx.lineWidth=1.5;ctx.lineJoin='round';ctx.stroke();
-  const lv=data[data.length-1],ly=h-((lv-mn)/rng)*(h-4)-2;
-  ctx.beginPath();ctx.arc(w,ly,3,0,Math.PI*2);ctx.fillStyle=col;ctx.fill();
-}
+function proc(raw){const first=!gps;lu=new Date();const c=mode==='live'?sm.upd(raw):{latitude:raw.latitude,longitude:raw.longitude,speed:toKmh(raw.speed),heading:raw.heading,altitude:raw.altitude,accuracy:raw.accuracy};gps=c;const spd=c.speed;if(spd>.5){sS+=spd;sC++}if(spd>mxS)mxS=spd;if(prevLat!=null&&prevLon!=null&&spd>1){const d=haversine(prevLat,prevLon,c.latitude,c.longitude);if(d<.5)totalDist+=d}prevLat=c.latitude;prevLon=c.longitude;if(c.altitude!=null){if(c.altitude<minAlt)minAlt=c.altitude;if(c.altitude>maxAlt)maxAlt=c.altitude}sH.push(spd);if(sH.length>H)sH.shift();aH.push(c.altitude||0);if(aH.length>H)aH.shift();if(first){buildOnce();$('LS').style.display='none';$('DS').style.display='block';initMap(c.latitude,c.longitude)}upd(c)}
 
-// ══ HEADING TAPE (Canvas-based) ══
-function drawHeadingTape(heading){
-  const c=$('hdgTape');if(!c)return;
-  const ctx=c.getContext('2d');
-  const dpr=window.devicePixelRatio||1,w=c.clientWidth,h=c.clientHeight;
-  if(c.width!==w*dpr||c.height!==h*dpr){c.width=w*dpr;c.height=h*dpr}
-  ctx.setTransform(dpr,0,0,dpr,0,0);
-  ctx.clearRect(0,0,w,h);
+function resetAll(){gps=null;sH=[];aH=[];mxS=0;sS=0;sC=0;lu=null;sm.rst();totalDist=0;prevLat=null;prevLon=null;minAlt=Infinity;maxAlt=-Infinity;if(leafMap){leafMap.remove();leafMap=null;leafMarker=null}mapInited=false}
 
-  const hdg=heading||0;
-  const degPerPx=0.7;
-  const centerX=w/2;
-
-  const dirs={0:'N',45:'NE',90:'E',135:'SE',180:'S',225:'SW',270:'W',315:'NW'};
-
-  for(let deg=-180;deg<=540;deg++){
-    const off=(deg-hdg);
-    let normOff=off;
-    if(normOff>180)normOff-=360;
-    if(normOff<-180)normOff+=360;
-    const px=centerX+normOff/degPerPx;
-    if(px<-20||px>w+20)continue;
-
-    const normDeg=((deg%360)+360)%360;
-
-    if(normDeg%10===0){
-      const isMajor=normDeg%30===0;
-      const tickH=isMajor?18:10;
-      ctx.beginPath();
-      ctx.moveTo(px,h);
-      ctx.lineTo(px,h-tickH);
-      ctx.strokeStyle=isMajor?'rgba(201,168,76,0.7)':'rgba(232,236,241,0.2)';
-      ctx.lineWidth=isMajor?1.5:0.5;
-      ctx.stroke();
-
-      if(isMajor){
-        const dirLabel=dirs[normDeg];
-        ctx.font=dirLabel?'bold 12px Outfit':'10px JetBrains Mono';
-        ctx.fillStyle=dirLabel?(normDeg===0?'#FF4D4D':'rgba(201,168,76,0.8)'):'rgba(232,236,241,0.4)';
-        ctx.textAlign='center';
-        ctx.fillText(dirLabel||normDeg+'°',px,16);
-      }
-    }
-  }
-}
-
-// ══ UPDATE ALL DISPLAYS ══
-function upd(c){
-  const spd=c.speed,kn=spd/3.6*1.94384,alt=c.altitude,hdg=c.heading,avg=sC>0?sS/sC:0;
-
-  // Position
-  $('vLat').textContent=toDMS(c.latitude,true);
-  $('vLon').textContent=toDMS(c.longitude,false);
-  $('vLL').textContent=`${c.latitude.toFixed(6)}° / ${c.longitude.toFixed(6)}°`;
-
-  // Map
-  updateMap(c.latitude,c.longitude);
-
-  // Speed gauge
-  const sA2=-135,eA2=135,r2=70,cx2=90,cy2=90,maxS=60;
-  const pct=clamp(spd/maxS,0,1),sw2=sA2+pct*(eA2-sA2);
-  const p2c2=(a,rd)=>({x:cx2+rd*Math.cos((a-90)*Math.PI/180),y:cy2+rd*Math.sin((a-90)*Math.PI/180)});
-  const arc2=(f,t,rd)=>{const s=p2c2(f,rd),e=p2c2(t,rd),lg=t-f>180?1:0;return`M ${s.x} ${s.y} A ${rd} ${rd} 0 ${lg} 1 ${e.x} ${e.y}`};
-  $('sArc').setAttribute('d',pct>0.005?arc2(sA2,sw2,r2):'M0,0');
-  const tip=p2c2(sw2,r2-10),nA=sw2-90;
-  const b1={x:cx2+3*Math.cos((nA+90)*Math.PI/180),y:cy2+3*Math.sin((nA+90)*Math.PI/180)};
-  const b2={x:cx2+3*Math.cos((nA-90)*Math.PI/180),y:cy2+3*Math.sin((nA-90)*Math.PI/180)};
-  $('sNd').setAttribute('points',`${tip.x},${tip.y} ${b1.x},${b1.y} ${b2.x},${b2.y}`);
-  $('sVt').textContent=spd.toFixed(1);
-  $('vKn').textContent=kn.toFixed(1)+' kn';
-  $('vMx').textContent=mxS.toFixed(1)+' km/h';
-  $('vAv').textContent=avg.toFixed(1)+' km/h';
-
-  // Distance
-  $('vDkm').textContent=totalDist.toFixed(3);
-  $('vDnm').textContent=(totalDist*0.539957).toFixed(3);
-
-  drawSp('cSp',sH,'#00D4FF');
-
-  // Altitude ring gauge: arc=273.32
-  const altV=alt||0,maxA=2000;
-  const altPct=clamp(altV/maxA,0,1);
-  const arcLen=273.32;
-  $('altRing').style.strokeDashoffset=arcLen-(altPct*arcLen);
-  $('altValSvg').textContent=alt!=null?Math.round(alt):'—';
-  $('vAf2').textContent=alt!=null?Math.round(toFt(alt))+' ft':'—';
-  $('vAmn').textContent=minAlt<Infinity?Math.round(minAlt)+' m':'—';
-  $('vAmx').textContent=maxAlt>-Infinity?Math.round(maxAlt)+' m':'—';
-  const diff=maxAlt>-Infinity&&minAlt<Infinity?Math.round(maxAlt-minAlt):null;
-  $('vAdf').textContent=diff!=null?'Δ '+diff+' m':'—';
-
-  // Altitude zone label
-  let zoneTxt='Meereshöhe',zoneCol='#1E40AF';
-  if(altV>1500){zoneTxt='HOCHGEBIRGE';zoneCol='#78350F'}
-  else if(altV>800){zoneTxt='GEBIRGE';zoneCol='#C9A84C'}
-  else if(altV>200){zoneTxt='HÜGELLAND';zoneCol='#059669'}
-  else if(altV>50){zoneTxt='FLACHLAND';zoneCol='#34D399'}
-  else{zoneTxt='KÜSTENNAH';zoneCol='#1E40AF'}
-  $('altZone').textContent=zoneTxt;
-  $('altZone').setAttribute('fill',zoneCol);
-
-  drawSp('cAl',aH,'#34D399');
-
-  // Heading tape
-  drawHeadingTape(hdg);
-  if(hdg!=null){
-    $('vHd2').textContent=Math.round(hdg)+'°';
-    $('vHt2').textContent=hTxt(hdg);
-    $('miniCR').style.transform=`rotate(${-hdg}deg)`;
-    $('miniCR').style.transformOrigin='60px 60px';
-    $('miniCR').style.transition='transform 0.5s cubic-bezier(.25,.46,.45,.94)';
-  } else {
-    $('vHd2').textContent='—';
-    $('vHt2').textContent='Kein Kurs';
-  }
-
-  // Status bar
-  if(c.accuracy!=null){const a=c.accuracy,g=a<10,o=a<30,col=g?'var(--green)':o?'var(--yellow)':'var(--red)',lb=g?'Exzellent':o?'Gut':'Niedrig';
-    $('stL').innerHTML=`<span class="adot" style="background:${col};box-shadow:0 0 6px ${col}"></span><span style="font-size:10px;color:${col}">±${Math.round(a)}m · ${lb}</span>`}
-  else if(mode==='demo')$('stL').innerHTML='<span style="color:var(--yellow);font-size:10px">🎮 Demo</span>';
-  $('stT').textContent=lu?lu.toLocaleTimeString('de-DE'):'—';
-}
-
-// ══ PROCESS GPS DATA ══
-function proc(raw){
-  const first=!gps;lu=new Date();
-  const c=mode==='live'?sm.upd(raw):{latitude:raw.latitude,longitude:raw.longitude,speed:toKmh(raw.speed),heading:raw.heading,altitude:raw.altitude,accuracy:raw.accuracy};
-  gps=c;const spd=c.speed;if(spd>0.5){sS+=spd;sC++}if(spd>mxS)mxS=spd;
-
-  // Distance tracking
-  if(prevLat!=null&&prevLon!=null&&spd>1.0){
-    const d=haversine(prevLat,prevLon,c.latitude,c.longitude);
-    if(d<0.5)totalDist+=d; // ignore jumps > 500m
-  }
-  prevLat=c.latitude;prevLon=c.longitude;
-
-  // Alt min/max
-  if(c.altitude!=null){
-    if(c.altitude<minAlt)minAlt=c.altitude;
-    if(c.altitude>maxAlt)maxAlt=c.altitude;
-  }
-
-  sH.push(spd);if(sH.length>H)sH.shift();aH.push(c.altitude||0);if(aH.length>H)aH.shift();
-  if(first){buildOnce();$('LS').style.display='none';$('DS').style.display='block';initMap(c.latitude,c.longitude)}upd(c);
-}
-
-function resetAll(){gps=null;sH=[];aH=[];mxS=0;sS=0;sC=0;lu=null;sm.rst();totalDist=0;prevLat=null;prevLon=null;minAlt=Infinity;maxAlt=-Infinity;
-  if(leafMap){leafMap.remove();leafMap=null;leafMarker=null}mapInited=false}
-
-function startL(){
-  if(!navigator.geolocation){$('lMsg').textContent='Geolocation nicht unterstützt.';return}
-  $('LS').style.display='block';$('DS').style.display='none';$('lMsg').textContent='GPS-Signal wird gesucht…';$('hCard').style.display='none';
-  requestWakeLock();
-  wId=navigator.geolocation.watchPosition(p=>proc(p.coords),e=>{
-    if(e.code===1){$('lMsg').textContent='Standortzugriff verweigert.';$('hCard').style.display='block';$('hCard').innerHTML=`<div class="hc"><h3>📡 GPS blockiert</h3><p>So behebst du das:</p><ol><li>Tippe auf das <b>🔒 Schloss</b> in der Adressleiste</li><li><b>Berechtigungen → Standort → Zulassen</b></li><li>Seite neu laden</li></ol><p style="margin-top:8px"><b>Tipp:</b> file://-URLs unterstützen kein GPS. Nutze GitHub Pages oder den Demo-Modus!</p><button class="rb" onclick="rGps()">🔄 Erneut versuchen</button></div>`}
-    else $('lMsg').textContent=e.code===2?'GPS nicht verfügbar.':'Positionsfehler.';
-  },{enableHighAccuracy:true,maximumAge:1000,timeout:10000})}
+function startL(){if(!navigator.geolocation){$('lMsg').textContent='Geolocation nicht unterstützt.';return}$('LS').style.display='block';$('DS').style.display='none';$('lMsg').textContent='GPS-Signal wird gesucht…';$('hCard').style.display='none';reqWL();if(!ldA())startSess();renderLog();wId=navigator.geolocation.watchPosition(p=>proc(p.coords),e=>{if(e.code===1){$('lMsg').textContent='Standortzugriff verweigert.';$('hCard').style.display='block';$('hCard').innerHTML=`<div class="hc"><h3>📡 GPS blockiert</h3><p>So behebst du das:</p><ol><li>Tippe auf das <b>🔒 Schloss</b> in der Adressleiste</li><li><b>Berechtigungen → Standort → Zulassen</b></li><li>Seite neu laden</li></ol><p style="margin-top:8px"><b>Tipp:</b> file://-URLs unterstützen kein GPS. Nutze GitHub Pages oder den Demo-Modus!</p><button class="rb" onclick="rGps()">🔄 Erneut versuchen</button></div>`}else $('lMsg').textContent=e.code===2?'GPS nicht verfügbar.':'Positionsfehler.'},{enableHighAccuracy:true,maximumAge:1000,timeout:10000})}
 function stopL(){if(wId!=null){navigator.geolocation.clearWatch(wId);wId=null}}
-function startD(){dT=0;proc(dGps(0));dIv=setInterval(()=>{dT++;proc(dGps(dT))},1000)}
+function startD(){dT=0;startSess();proc(dGps(0));dIv=setInterval(()=>{dT++;proc(dGps(dT))},1000);renderLog()}
 function stopD(){if(dIv){clearInterval(dIv);dIv=null}}
 
-window.swM=function(m){if(m===mode)return;stopL();stopD();resetAll();mode=m;
-  $('bL').classList.toggle('on',m==='live');$('bD').classList.toggle('on',m==='demo');
-  $('dB').classList.toggle('on',m==='demo');$('hCard').style.display='none';
-  if(m==='live')startL();else startD()};
-window.rGps=function(){$('hCard').style.display='none';stopL();resetAll();startL()};
-
+window.swM=function(m){if(m===mode)return;endSess();stopL();stopD();resetAll();mode=m;$('bL').classList.toggle('on',m==='live');$('bD').classList.toggle('on',m==='demo');$('dB').classList.toggle('on',m==='demo');$('hCard').style.display='none';if(m==='live')startL();else startD()};
+window.rGps=function(){$('hCard').style.display='none';endSess();stopL();resetAll();startSess();startL()};
 $('pD').addEventListener('click',()=>{if(!gps)return;const t=`${gps.latitude.toFixed(6)}, ${gps.longitude.toFixed(6)}`;if(navigator.clipboard)navigator.clipboard.writeText(t).then(()=>{$('cT').classList.add('on');setTimeout(()=>$('cT').classList.remove('on'),2000)}).catch(()=>{})});
 
-startL();
+renderLog();startL();
 </script>
 </body>
 </html>
