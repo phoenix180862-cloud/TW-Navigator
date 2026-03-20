@@ -10,6 +10,8 @@
 <title>TW Navigator</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
 :root{--bg:#0A1628;--bg2:#060E1A;--gold:#C9A84C;--gold-dim:rgba(201,168,76,0.25);--gold-glow:rgba(201,168,76,0.12);--cyan:#00D4FF;--cyan-dim:rgba(0,212,255,0.15);--white:#E8ECF1;--dim:rgba(232,236,241,0.45);--red:#FF4D4D;--green:#34D399;--yellow:#FBBF24;--mono:'JetBrains Mono','Courier New',monospace;--sans:'Outfit',-apple-system,sans-serif}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -80,7 +82,9 @@ canvas{will-change:transform;transform:translateZ(0)}
 
 /* ═══ MAP CONTAINER ═══ */
 #mapBox{width:100%;height:280px;border-radius:12px;overflow:hidden;position:relative;border:1px solid var(--gold-dim);margin-top:10px}
-#mapFrame{width:100%;height:100%;border:none}
+#mapDiv{width:100%;height:100%}
+#mapDiv .leaflet-tile-pane{filter:none !important}
+.leaflet-container{background:#0A1628 !important}
 
 /* ═══ ALTITUDE - Aircraft Drum Altimeter ═══ */
 .alt-drum{position:relative;display:flex;align-items:center;gap:14px;padding:8px 0}
@@ -159,7 +163,7 @@ canvas{will-change:transform;transform:translateZ(0)}
 <div class="crd"><div class="cl"><span>📍</span> Position</div>
 <div class="pd" id="pD"><div class="mn17" id="vLat">—</div><div class="mn17" id="vLon">—</div><div class="sm" style="margin-top:3px" id="vLL">—</div><div class="ct2" id="cT">✓ Kopiert</div></div>
 <div id="mapBox">
-<iframe id="mapFrame" src="about:blank" loading="lazy" allow="geolocation"></iframe>
+<div id="mapDiv"></div>
 </div>
 </div>
 
@@ -308,29 +312,21 @@ document.addEventListener('visibilitychange',()=>{
 // ══ DEMO GPS ══
 function dGps(t){const b=t*0.02;return{latitude:50.705+Math.sin(b*.7)*.008+Math.cos(b*.3)*.004,longitude:7.895+Math.cos(b*.5)*.012+Math.sin(b*.8)*.003,speed:Math.max(0,6+Math.sin(b*1.2)*4+Math.cos(b*2.5)*2.5+Math.sin(b*.3)*3)/3.6,heading:(((b*40)+Math.sin(b*.8)*60+Math.cos(b*1.5)*30)%360+360)%360,altitude:180+Math.sin(b*.4)*80+Math.cos(b*.9)*40,accuracy:3+Math.random()*2}}
 
-// ══ MAP ══
+// ══ MAP (Direct Leaflet - no iframe) ══
+let leafMap=null,leafMarker=null,mapPausedFlag=false,mapPauseT=null;
 function initMap(lat,lon){
   if(mapInited)return;
   mapInited=true;
-  const f=$('mapFrame');
-  const html=`<!DOCTYPE html><html><head><meta name="viewport" content="width=device-width,initial-scale=1">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-<style>body{margin:0}#m{width:100%;height:100%}</style></head><body>
-<div id="m"></div>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"><\/script>
-<script>
-var map=L.map('m',{zoomControl:false,attributionControl:false}).setView([${lat},${lon}],15);
-L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{maxZoom:19}).addTo(map);
-var mk=L.circleMarker([${lat},${lon}],{radius:7,color:'#00D4FF',fillColor:'#00D4FF',fillOpacity:0.9,weight:2}).addTo(map);
-var paused=false,timer=null;
-map.on('mousedown touchstart',function(){paused=true;clearTimeout(timer);timer=setTimeout(function(){paused=false},10000)});
-window.updatePos=function(lat,lon){mk.setLatLng([lat,lon]);if(!paused)map.panTo([lat,lon],{animate:true,duration:0.5})};
-<\/script></body></html>`;
-  f.srcdoc=html;
+  leafMap=L.map('mapDiv',{zoomControl:false,attributionControl:false}).setView([lat,lon],15);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{maxZoom:19}).addTo(leafMap);
+  leafMarker=L.circleMarker([lat,lon],{radius:7,color:'#00D4FF',fillColor:'#00D4FF',fillOpacity:0.9,weight:2}).addTo(leafMap);
+  leafMap.on('mousedown touchstart',function(){mapPausedFlag=true;clearTimeout(mapPauseT);mapPauseT=setTimeout(function(){mapPausedFlag=false},10000)});
+  setTimeout(function(){leafMap.invalidateSize()},200);
 }
 function updateMap(lat,lon){
   if(!mapInited)return initMap(lat,lon);
-  try{$('mapFrame').contentWindow.updatePos(lat,lon)}catch(e){}
+  if(leafMarker)leafMarker.setLatLng([lat,lon]);
+  if(leafMap&&!mapPausedFlag)leafMap.panTo([lat,lon],{animate:true,duration:0.5});
 }
 
 // ══ BUILD STATIC ELEMENTS ══
@@ -541,7 +537,8 @@ function proc(raw){
   if(first){buildOnce();$('LS').style.display='none';$('DS').style.display='block';initMap(c.latitude,c.longitude)}upd(c);
 }
 
-function resetAll(){gps=null;sH=[];aH=[];mxS=0;sS=0;sC=0;lu=null;sm.rst();totalDist=0;prevLat=null;prevLon=null;minAlt=Infinity;maxAlt=-Infinity;mapInited=false}
+function resetAll(){gps=null;sH=[];aH=[];mxS=0;sS=0;sC=0;lu=null;sm.rst();totalDist=0;prevLat=null;prevLon=null;minAlt=Infinity;maxAlt=-Infinity;
+  if(leafMap){leafMap.remove();leafMap=null;leafMarker=null}mapInited=false}
 
 function startL(){
   if(!navigator.geolocation){$('lMsg').textContent='Geolocation nicht unterstützt.';return}
