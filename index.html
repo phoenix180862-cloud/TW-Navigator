@@ -205,9 +205,26 @@ function hTxt(d){if(d==null)return'—';const a=['N','NNE','NE','ENE','E','ESE',
 function fmtDT(d){return d.toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric'})+' '+d.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})}
 function haversine(a1,o1,a2,o2){const R=6371,dL=(a2-a1)*Math.PI/180,dO=(o2-o1)*Math.PI/180,x=Math.sin(dL/2)**2+Math.cos(a1*Math.PI/180)*Math.cos(a2*Math.PI/180)*Math.sin(dO/2)**2;return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x))}
 
-const sm={speed:null,heading:null,altitude:null,lat:null,lon:null,
-  upd(r){const rs=toKmh(r.speed),si=rs<1.5?0:rs;if(this.speed===null)this.speed=si;else this.speed+=.25*(si-this.speed);if(this.speed<.3)this.speed=0;if(r.altitude!=null){if(this.altitude===null)this.altitude=r.altitude;else this.altitude+=.3*(r.altitude-this.altitude)}if(r.heading!=null&&rs>=2){if(this.heading===null)this.heading=r.heading;else{let d=r.heading-this.heading;if(d>180)d-=360;if(d<-180)d+=360;this.heading=((this.heading+.2*d)%360+360)%360}}if(this.lat===null){this.lat=r.latitude;this.lon=r.longitude}else{this.lat+=.4*(r.latitude-this.lat);this.lon+=.4*(r.longitude-this.lon)}return{latitude:this.lat,longitude:this.lon,speed:this.speed,heading:this.heading,altitude:this.altitude,accuracy:r.accuracy}},
-  rst(){this.speed=null;this.heading=null;this.altitude=null;this.lat=null;this.lon=null}};
+const sm={speed:null,heading:null,altitude:null,lat:null,lon:null,lastLat:null,lastLon:null,lastT:null,
+  upd(r){
+    // Calculate speed from position if coords.speed is null
+    let rawSpd=r.speed;
+    if((rawSpd==null||rawSpd===0)&&this.lastLat!=null){
+      const now=Date.now(),dt=(now-this.lastT)/1000;
+      if(dt>0&&dt<10){
+        const d=haversine(this.lastLat,this.lastLon,r.latitude,r.longitude)*1000; // meters
+        rawSpd=d/dt; // m/s
+      }
+    }
+    this.lastLat=r.latitude;this.lastLon=r.longitude;this.lastT=Date.now();
+    const rs=toKmh(rawSpd),si=rs<0.5?0:rs;
+    if(this.speed===null)this.speed=si;else this.speed+=.25*(si-this.speed);
+    if(this.speed<0.2)this.speed=0;
+    if(r.altitude!=null){if(this.altitude===null)this.altitude=r.altitude;else this.altitude+=.3*(r.altitude-this.altitude)}
+    if(r.heading!=null&&rs>=1.5){if(this.heading===null)this.heading=r.heading;else{let d=r.heading-this.heading;if(d>180)d-=360;if(d<-180)d+=360;this.heading=((this.heading+.2*d)%360+360)%360}}
+    if(this.lat===null){this.lat=r.latitude;this.lon=r.longitude}else{this.lat+=.4*(r.latitude-this.lat);this.lon+=.4*(r.longitude-this.lon)}
+    return{latitude:this.lat,longitude:this.lon,speed:this.speed,heading:this.heading,altitude:this.altitude,accuracy:r.accuracy}},
+  rst(){this.speed=null;this.heading=null;this.altitude=null;this.lat=null;this.lon=null;this.lastLat=null;this.lastLon=null;this.lastT=null}};
 
 let mode='live',gps=null,lu=null,sH=[],aH=[],mxS=0,sS=0,sC=0,wId=null,dIv=null,dT=0,built=false;
 let totalDist=0,prevLat=null,prevLon=null,minAlt=Infinity,maxAlt=-Infinity;
@@ -298,8 +315,18 @@ function upd(c){const spd=c.speed,kn=spd/3.6*1.94384,alt=c.altitude,hdg=c.headin
   drawHT(hdg);if(hdg!=null){$('vHd2').textContent=Math.round(hdg)+'°';$('vHt2').textContent=hTxt(hdg);$('miniCR').style.transform=`rotate(${-hdg}deg)`;$('miniCR').style.transformOrigin='60px 60px';$('miniCR').style.transition='transform .5s cubic-bezier(.25,.46,.45,.94)'}else{$('vHd2').textContent='—';$('vHt2').textContent='Kein Kurs'}
   if(c.accuracy!=null){const a=c.accuracy,g=a<10,o=a<30,col=g?'var(--green)':o?'var(--yellow)':'var(--red)';$('stL').innerHTML=`<span class="adot" style="background:${col};box-shadow:0 0 6px ${col}"></span><span style="font-size:10px;color:${col}">±${Math.round(a)}m · ${g?'Exzellent':o?'Gut':'Niedrig'}</span>`}else if(mode==='demo')$('stL').innerHTML='<span style="color:var(--yellow);font-size:10px">🎮 Demo</span>';$('stT').textContent=lu?lu.toLocaleTimeString('de-DE'):'—'}
 
-function proc(raw){const first=!gps;lu=new Date();const c=mode==='live'?sm.upd(raw):{latitude:raw.latitude,longitude:raw.longitude,speed:toKmh(raw.speed),heading:raw.heading,altitude:raw.altitude,accuracy:raw.accuracy};gps=c;const spd=c.speed;
-  if(recording){if(spd>.5){sS+=spd;sC++}if(spd>mxS)mxS=spd;if(prevLat!=null&&prevLon!=null&&spd>1){const d=haversine(prevLat,prevLon,c.latitude,c.longitude);if(d<.5)totalDist+=d}if(c.altitude!=null){if(c.altitude<minAlt)minAlt=c.altitude;if(c.altitude>maxAlt)maxAlt=c.altitude}}
+function proc(raw){const first=!gps;lu=new Date();const c=mode==='live'?sm.upd(raw):{latitude:raw.latitude,longitude:raw.longitude,speed:toKmh(raw.speed||0),heading:raw.heading,altitude:raw.altitude,accuracy:raw.accuracy};gps=c;const spd=c.speed;
+  if(recording){
+    if(spd>0.3){sS+=spd;sC++}
+    if(spd>mxS)mxS=spd;
+    // Track distance: use position delta, filter GPS noise by accuracy
+    if(prevLat!=null&&prevLon!=null){
+      const d=haversine(prevLat,prevLon,c.latitude,c.longitude);
+      const minDist=(c.accuracy!=null&&c.accuracy>0)?c.accuracy/1000*0.5:0.003; // half accuracy as noise floor
+      if(d>minDist&&d<0.5)totalDist+=d; // between noise floor and 500m jump filter
+    }
+    if(c.altitude!=null){if(c.altitude<minAlt)minAlt=c.altitude;if(c.altitude>maxAlt)maxAlt=c.altitude}
+  }
   prevLat=c.latitude;prevLon=c.longitude;sH.push(spd);if(sH.length>H)sH.shift();aH.push(c.altitude||0);if(aH.length>H)aH.shift();if(first){buildOnce();$('LS').style.display='none';$('DS').style.display='block';initMap(c.latitude,c.longitude)}upd(c)}
 
 function resetAll(){gps=null;sH=[];aH=[];mxS=0;sS=0;sC=0;lu=null;sm.rst();totalDist=0;prevLat=null;prevLon=null;minAlt=Infinity;maxAlt=-Infinity;if(leafMap){leafMap.remove();leafMap=null;leafMarker=null}mapInited=false}
