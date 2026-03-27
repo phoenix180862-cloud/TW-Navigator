@@ -1,800 +1,216 @@
 <!DOCTYPE html>
-<html lang="de">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#0A1628">
-<title>TW Navigator</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TW Navigator - Luxury Maritime Bridge</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-secondary-fixed-variant": "#574500",
+                        "on-primary-fixed-variant": "#004f58",
+                        "tertiary-fixed-dim": "#00daf3",
+                        "on-background": "#dde2f6",
+                        "on-error-container": "#ffdad6",
+                        "on-error": "#690005",
+                        "primary": "#00daf3",
+                        "on-secondary-fixed": "#241a00",
+                        "surface-variant": "#2f3444",
+                        "tertiary-fixed": "#9cf0ff",
+                        "surface-container-lowest": "#080e1c",
+                        "surface-bright": "#333949",
+                        "surface": "#0d1321",
+                        "error": "#ffb4ab",
+                        "surface-container-highest": "#2f3444",
+                        "on-tertiary-fixed-variant": "#004f58",
+                        "primary-fixed": "#9cf0ff",
+                        "on-primary-fixed": "#001f24",
+                        "surface-dim": "#0d1321",
+                        "on-secondary-container": "#342800",
+                        "outline-variant": "#45464c",
+                        "primary-container": "#000d0f",
+                        "tertiary-container": "#000d10",
+                        "secondary": "#e9c349",
+                        "on-primary-container": "#008696",
+                        "surface-container-high": "#242a39",
+                        "on-primary": "#00363d",
+                        "surface-container-low": "#161b2a",
+                        "surface-container": "#1a1f2e",
+                        "on-secondary": "#3c2f00",
+                        "secondary-fixed-dim": "#e9c349",
+                        "tertiary": "#00daf3",
+                        "inverse-surface": "#dde2f6",
+                        "outline": "#909096",
+                        "on-tertiary-fixed": "#001f24",
+                        "on-tertiary": "#00363d",
+                        "on-surface": "#dde2f6",
+                        "secondary-fixed": "#ffe088",
+                        "secondary-container": "#af8d11",
+                        "on-surface-variant": "#c6c6cc",
+                        "error-container": "#93000a",
+                        "background": "#0d1321",
+                        "inverse-primary": "#006875",
+                        "inverse-on-surface": "#2b3040",
+                        "primary-fixed-dim": "#00daf3",
+                        "surface-tint": "#00daf3",
+                        "on-tertiary-container": "#008696"
+                    },
+                    fontFamily: {
+                        "headline": ["Space Grotesk"],
+                        "body": ["Inter"],
+                        "label": ["Space Grotesk"],
+                        "mono": ["JetBrains Mono"]
+                    },
+                    borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+                },
+            },
+        }
+    </script>
 <style>
-:root{
-  --bg:#0A1628;--bg2:#060E1A;--card:rgba(12,22,45,0.92);
-  --gold:#C9A84C;--gold-dim:rgba(201,168,76,0.25);--gold-glow:rgba(201,168,76,0.12);
-  --cyan:#00D4FF;--cyan-dim:rgba(0,212,255,0.15);
-  --white:#E8ECF1;--dim:rgba(232,236,241,0.45);
-  --red:#FF4D4D;--green:#34D399;--yellow:#FBBF24;
-  --mono:'JetBrains Mono','Courier New',monospace;
-  --sans:'Outfit',-apple-system,sans-serif;
-}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{height:100%;-webkit-text-size-adjust:100%}
-body{font-family:var(--sans);background:linear-gradient(180deg,var(--bg) 0%,var(--bg2) 100%);color:var(--white);min-height:100vh;min-height:100dvh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
-body::before{content:'';position:fixed;inset:0;opacity:0.025;pointer-events:none;z-index:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
-
-#app{max-width:430px;margin:0 auto;padding:0 10px 80px;position:relative;z-index:1}
-
-/* ═══ HEADER ═══ */
-.hdr{display:flex;align-items:center;justify-content:center;gap:10px;padding:14px 0 6px}
-.hdr svg{flex-shrink:0}
-.hdr-text{display:flex;flex-direction:column}
-.hdr .t{font-size:17px;font-weight:700;color:var(--gold);letter-spacing:3px;text-transform:uppercase;line-height:1.2}
-.hdr .s{font-size:9px;color:var(--dim);letter-spacing:2px;margin-top:2px}
-.dbadge{display:none;background:rgba(251,191,36,0.15);color:var(--yellow);font-size:8px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:2px 8px;border-radius:8px;border:1px solid rgba(251,191,36,0.3);margin-left:6px;vertical-align:middle}
-.dbadge.on{display:inline-block}
-.wl-badge{display:inline-flex;align-items:center;gap:3px;font-size:8px;color:var(--green);opacity:0;transition:opacity .3s}
-.wl-badge.on{opacity:1}
-.wl-dot{width:4px;height:4px;border-radius:50%;background:var(--green);animation:blink 2s ease-in-out infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
-
-/* ═══ MODE BAR ═══ */
-.mbar{display:flex;justify-content:center;margin:6px 0 8px}
-.mbtn{font-family:var(--sans);font-size:10px;font-weight:600;padding:6px 16px;border:1px solid var(--gold-dim);background:transparent;color:var(--dim);cursor:pointer;letter-spacing:1px;transition:all .3s;-webkit-tap-highlight-color:transparent}
-.mbtn:first-child{border-radius:16px 0 0 16px}.mbtn:last-child{border-radius:0 16px 16px 0}
-.mbtn.on{background:rgba(201,168,76,0.15);color:var(--gold);border-color:var(--gold)}
-
-/* ═══ CARDS ═══ */
-.crd{background:var(--card);border:1px solid var(--gold-dim);border-radius:16px;padding:14px;margin-bottom:10px;box-shadow:0 4px 30px rgba(0,0,0,.45),inset 0 1px 0 var(--gold-glow);animation:fu .5s ease-out both;will-change:transform;transform:translateZ(0)}
-.crd:nth-child(1){animation-delay:.05s}.crd:nth-child(2){animation-delay:.1s}.crd:nth-child(3){animation-delay:.15s}
-@keyframes fu{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-
-.cl{display:flex;align-items:center;gap:6px;margin-bottom:10px;font-size:10px;font-weight:600;color:var(--gold);letter-spacing:2px;text-transform:uppercase}
-.cl .rst-btn{margin-left:auto;font-family:var(--sans);font-size:9px;color:var(--dim);background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:6px;padding:3px 8px;cursor:pointer;letter-spacing:.5px;-webkit-tap-highlight-color:transparent;transition:all .2s}
-.cl .rst-btn:active{color:var(--red);border-color:rgba(255,77,77,0.3);background:rgba(255,77,77,0.08)}
-
-/* ═══ INSTRUMENT PANEL ═══ */
-.inst-grid{display:grid;gap:2px}
-.inst-section{padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.04)}
-.inst-section:last-child{border-bottom:none;padding-bottom:0}
-.inst-section:first-child{padding-top:0}
-
-.inst-label{font-size:9px;color:var(--dim);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px;display:flex;align-items:center;gap:6px}
-.inst-label .dot{width:5px;height:5px;border-radius:50%}
-
-/* Speed section */
-.speed-main{display:flex;align-items:baseline;gap:4px}
-.speed-val{font-family:var(--mono);font-size:52px;font-weight:700;line-height:1;color:var(--white);letter-spacing:-1px}
-.speed-unit{font-size:16px;color:var(--dim);font-weight:400}
-.speed-secondary{display:flex;gap:14px;margin-top:6px;flex-wrap:wrap}
-.speed-sub{display:flex;align-items:baseline;gap:4px}
-.speed-sub-val{font-family:var(--mono);font-size:18px;font-weight:700}
-.speed-sub-unit{font-size:10px;color:var(--dim)}
-.spd-cyan{color:var(--cyan)}
-.spd-gold{color:var(--gold)}
-.spd-green{color:var(--green)}
-.spd-white{color:var(--white)}
-
-/* Altitude section */
-.alt-main{display:flex;align-items:baseline;gap:4px}
-.alt-val{font-family:var(--mono);font-size:42px;font-weight:700;line-height:1;color:var(--white)}
-.alt-unit{font-size:14px;color:var(--dim);font-weight:400}
-.alt-secondary{display:flex;gap:14px;margin-top:6px;flex-wrap:wrap}
-.alt-sub{display:flex;align-items:baseline;gap:4px}
-.alt-sub-val{font-family:var(--mono);font-size:16px;font-weight:700}
-.alt-sub-unit{font-size:9px;color:var(--dim)}
-.alt-zone{font-size:9px;font-weight:600;letter-spacing:1px;padding:2px 8px;border-radius:6px;display:inline-block;margin-top:4px}
-
-/* Heading section */
-.hdg-main{display:flex;align-items:center;gap:12px}
-.hdg-deg-val{font-family:var(--mono);font-size:42px;font-weight:700;line-height:1;color:var(--white)}
-.hdg-deg-sym{font-size:20px;color:var(--dim)}
-.hdg-dir-text{font-size:22px;font-weight:700;color:var(--cyan);letter-spacing:2px}
-.hdg-compass-wrap{margin-left:auto;flex-shrink:0}
-
-/* Distance row */
-.dist-row{display:flex;gap:6px;margin-top:8px}
-.dist-box{flex:1;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05);border-radius:10px;padding:8px;text-align:center}
-.dist-val{font-family:var(--mono);font-size:15px;font-weight:700;color:var(--white)}
-.dist-lbl{font-size:8px;color:var(--dim);margin-top:2px;text-transform:uppercase;letter-spacing:.8px}
-
-/* ═══ MAP ═══ */
-#mapBox{width:100%;height:380px;border-radius:12px;overflow:hidden;position:relative;border:1px solid var(--gold-dim)}
-#mapDiv{width:100%;height:100%}
-.leaflet-container{background:#f2efe9 !important}
-.map-pos{position:absolute;bottom:8px;left:8px;right:8px;z-index:1000;background:rgba(10,22,40,0.88);border:1px solid var(--gold-dim);border-radius:10px;padding:8px 12px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.map-pos-coord{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--white);line-height:1.5}
-.map-pos-dec{font-size:9px;color:var(--dim);font-family:var(--mono)}
-.ct2{font-size:9px;color:var(--green);font-weight:600;opacity:0;transition:opacity .3s;position:absolute;top:4px;right:12px}
-.ct2.on{opacity:1}
-
-/* ═══ SPARKLINES ═══ */
-.spark-row{display:flex;gap:6px;margin-top:6px}
-.spark-box{flex:1;position:relative}
-.spark-label{font-size:8px;color:var(--dim);margin-bottom:2px;letter-spacing:.5px}
-
-/* ═══ RECORDING PANEL ═══ */
-.rec-bar{display:flex;gap:8px;margin-bottom:10px;align-items:center}
-.rec-toggle{display:flex;align-items:center;gap:8px;flex:1;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:12px;padding:10px 14px;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.rec-toggle.on{border-color:var(--green);background:rgba(52,211,153,0.06)}
-.rec-toggle.off{border-color:var(--red);background:rgba(255,77,77,0.04)}
-.rec-switch{width:38px;height:20px;border-radius:10px;position:relative;transition:background .3s;flex-shrink:0}
-.rec-toggle.on .rec-switch{background:var(--green)}
-.rec-toggle.off .rec-switch{background:rgba(255,77,77,0.4)}
-.rec-knob{width:16px;height:16px;border-radius:50%;background:white;position:absolute;top:2px;transition:left .3s}
-.rec-toggle.on .rec-knob{left:20px}
-.rec-toggle.off .rec-knob{left:2px}
-.rec-label{font-size:11px;font-weight:600;letter-spacing:1px}
-.rec-toggle.on .rec-label{color:var(--green)}
-.rec-toggle.off .rec-label{color:var(--dim)}
-.rec-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
-.rec-toggle.on .rec-dot{background:var(--red);animation:blink 1s ease-in-out infinite}
-.rec-toggle.off .rec-dot{background:var(--dim)}
-.rec-reset{font-family:var(--sans);font-size:10px;font-weight:600;color:var(--yellow);background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.25);border-radius:12px;padding:10px 14px;cursor:pointer;white-space:nowrap;-webkit-tap-highlight-color:transparent;letter-spacing:.5px}
-
-/* Log items */
-.log-title{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-.log-title span{font-size:10px;font-weight:600;color:var(--gold);letter-spacing:2px;text-transform:uppercase}
-.log-clear{font-family:var(--sans);font-size:9px;color:var(--red);background:rgba(255,77,77,0.1);border:1px solid rgba(255,77,77,0.2);border-radius:8px;padding:3px 10px;cursor:pointer}
-.log-item{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);border-radius:12px;padding:10px 12px;margin-bottom:8px;position:relative}
-.log-item:last-child{margin-bottom:0}
-.log-dates{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;flex-wrap:wrap;gap:4px}
-.log-date{font-size:9px;color:var(--dim)}.log-date b{color:var(--cyan);font-weight:600}
-.log-arrow{color:var(--gold);font-size:9px;margin:0 3px}
-.log-stats{display:flex;gap:4px;flex-wrap:wrap}
-.log-stat{flex:1;min-width:65px;background:rgba(255,255,255,0.03);border-radius:8px;padding:5px 6px;text-align:center}
-.log-stat-val{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--white)}
-.log-stat-lbl{font-size:7px;color:var(--dim);margin-top:1px;text-transform:uppercase;letter-spacing:.5px}
-.log-del{position:absolute;top:6px;right:8px;font-size:14px;color:var(--dim);cursor:pointer;padding:4px;line-height:1;opacity:0.5;transition:opacity .2s;-webkit-tap-highlight-color:transparent}
-.log-del:active{opacity:1;color:var(--red)}
-.log-active{border-color:var(--green);box-shadow:0 0 10px rgba(52,211,153,0.12)}
-.log-active-badge{display:inline-block;background:rgba(52,211,153,0.15);color:var(--green);font-size:7px;font-weight:700;letter-spacing:1px;padding:2px 6px;border-radius:6px;border:1px solid rgba(52,211,153,0.3);animation:blink 2s ease-in-out infinite}
-.log-empty{text-align:center;padding:16px;color:var(--dim);font-size:11px}
-.log-edit{font-family:var(--sans);font-size:9px;color:var(--cyan);background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.2);border-radius:6px;padding:3px 8px;cursor:pointer;margin-right:24px;-webkit-tap-highlight-color:transparent}
-.log-edit:active{background:rgba(0,212,255,0.15)}
-
-/* Edit modal */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:100;display:flex;align-items:center;justify-content:center;padding:16px;opacity:0;pointer-events:none;transition:opacity .3s}
-.modal-overlay.open{opacity:1;pointer-events:auto}
-.modal{background:var(--bg);border:1px solid var(--gold-dim);border-radius:18px;padding:20px;max-width:380px;width:100%;max-height:80vh;overflow-y:auto}
-.modal h3{color:var(--gold);font-size:14px;letter-spacing:2px;margin-bottom:16px;text-transform:uppercase}
-.modal-field{margin-bottom:12px}
-.modal-field label{font-size:9px;color:var(--dim);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:4px}
-.modal-field input{width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:8px 12px;color:var(--white);font-family:var(--mono);font-size:14px;outline:none}
-.modal-field input:focus{border-color:var(--gold)}
-.modal-btns{display:flex;gap:8px;margin-top:16px}
-.modal-btn{flex:1;padding:10px;border-radius:10px;font-family:var(--sans);font-size:12px;font-weight:600;cursor:pointer;border:none;letter-spacing:1px}
-.modal-btn.save{background:rgba(52,211,153,0.2);color:var(--green);border:1px solid rgba(52,211,153,0.3)}
-.modal-btn.cancel{background:rgba(255,255,255,0.05);color:var(--dim);border:1px solid rgba(255,255,255,0.08)}
-
-/* ═══ LOADING ═══ */
-.lw{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:50vh;gap:18px}
-.lw .lm{color:var(--gold);font-size:14px;letter-spacing:1px;text-align:center}
-.lw .lh{color:var(--dim);font-size:11px;max-width:280px;text-align:center;line-height:1.7}
-@keyframes sw2{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-.rsw{animation:sw2 2s linear infinite;transform-origin:60px 60px}
-
-.hc{background:rgba(0,212,255,.06);border:1px solid rgba(0,212,255,.15);border-radius:14px;padding:14px 16px;margin:10px 0 14px}
-.hc h3{font-size:13px;color:var(--cyan);margin-bottom:8px;font-weight:600}
-.hc p,.hc li{font-size:11px;color:var(--dim);line-height:1.7}
-.hc ol{padding-left:18px;margin:6px 0}.hc li{margin-bottom:4px}
-.hc .rb{display:inline-block;margin-top:10px;padding:8px 20px;background:rgba(0,212,255,.12);border:1px solid rgba(0,212,255,.3);border-radius:10px;color:var(--cyan);font-size:12px;font-weight:600;cursor:pointer;font-family:var(--sans)}
-
-/* ═══ STATUS BAR ═══ */
-.bar{position:fixed;bottom:0;left:0;right:0;background:rgba(8,16,35,0.97);border-top:1px solid var(--gold-dim);padding:8px 14px;display:flex;justify-content:space-between;align-items:center;max-width:430px;margin:0 auto;z-index:10;padding-bottom:max(8px,env(safe-area-inset-bottom));will-change:transform;transform:translateZ(0)}
-.adot{width:6px;height:6px;border-radius:50%;display:inline-block;margin-right:4px}
-.stx{font-size:9px;color:var(--dim)}
-
-/* Nav tabs */
-.nav-tabs{display:flex;gap:1px;margin-bottom:10px;background:rgba(255,255,255,0.03);border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,0.05)}
-.nav-tab{flex:1;padding:10px 8px;text-align:center;font-size:10px;font-weight:600;color:var(--dim);cursor:pointer;letter-spacing:1px;transition:all .2s;-webkit-tap-highlight-color:transparent;border:none;background:transparent;font-family:var(--sans)}
-.nav-tab.on{background:rgba(201,168,76,0.12);color:var(--gold)}
-.nav-tab span{display:block;font-size:16px;margin-bottom:2px}
-
-.panel{display:none}.panel.on{display:block}
-
-svg{will-change:transform;transform:translateZ(0)}
-canvas{will-change:transform;transform:translateZ(0)}
-</style>
+        .glass-panel {
+            background: rgba(8, 14, 28, 0.7);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(0, 218, 243, 0.2);
+        }
+        .speed-glow {
+            text-shadow: 0 0 20px rgba(0, 218, 243, 0.5);
+        }
+        body {
+            background-color: #080e1c;
+            color: #dde2f6;
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+        }
+        .map-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+        }
+    </style>
 </head>
-<body>
-<div id="app">
-
-<!-- HEADER -->
-<div class="hdr">
-<svg width="54" height="54" viewBox="0 0 100 100" style="filter:drop-shadow(0 0 10px rgba(201,168,76,.4))">
-<defs><radialGradient id="iBg" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#162240"/><stop offset="100%" stop-color="#0A1628"/></radialGradient><linearGradient id="iG" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#E0C060"/><stop offset="100%" stop-color="#A08030"/></linearGradient></defs>
-<circle cx="50" cy="50" r="48" fill="url(#iBg)" stroke="url(#iG)" stroke-width="2.5"/><circle cx="50" cy="50" r="42" fill="none" stroke="rgba(201,168,76,.25)" stroke-width=".5"/>
-<line x1="50" y1="8" x2="50" y2="16" stroke="#C9A84C" stroke-width="1.5"/><line x1="50" y1="84" x2="50" y2="92" stroke="#C9A84C" stroke-width=".5" opacity=".4"/><line x1="8" y1="50" x2="16" y2="50" stroke="#C9A84C" stroke-width=".5" opacity=".4"/><line x1="84" y1="50" x2="92" y2="50" stroke="#C9A84C" stroke-width=".5" opacity=".4"/>
-<text x="50" y="22" text-anchor="middle" fill="#FF4D4D" font-size="7" font-weight="700">N</text>
-<polygon points="50,14 46,26 54,26" fill="#FF4D4D" opacity=".9"><animateTransform attributeName="transform" type="rotate" values="0 50 50;360 50 50" dur="60s" repeatCount="indefinite"/></polygon>
-<text x="50" y="53" text-anchor="middle" dominant-baseline="central" fill="#C9A84C" font-size="16" font-weight="800" font-family="Georgia,serif" letter-spacing="1">TW</text>
-</svg>
-<div class="hdr-text">
-  <div class="t">TW Navigator<span class="dbadge" id="dB">Demo</span></div>
-  <div class="s">Maritime Precision <span class="wl-badge" id="wlB"><span class="wl-dot"></span> AKTIV</span></div>
+<body class="min-h-screen">
+<!-- Full-Screen Map Background -->
+<div class="map-container">
+<img class="w-full h-full object-cover grayscale brightness-[0.4] contrast-125" data-alt="top-down nautical navigation map with blue ocean tones and digital grid overlay in a dark maritime aesthetic" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCqYybD8U1RFPTt44suGr6tvtuIXZqHkxnO1LJNY48Ubv3Hd2lTSCeCsWrD92Up7-_qhfMFifCO9VtOYMwrOmOBMOIiIbnWTH2q7tp_-L2zR0OeZIHj4YrHCOCwIM4waj28QtDWpMjhl1T82lnIvCCTm-rHM_3rJ1KJHKYEwoXKPWBNQo8irbRbXIL5uIlq91IdLvmwQkkHs57wPol5d9cl8llkT9YimSkZmqzJyWVuCVFU5MObVYa6T6sxypchH-IvW-UbfwxRcPC3"/>
+<!-- Radar/Compass Decorative Overlay -->
+<div class="absolute inset-0 pointer-events-none opacity-20 bg-[radial-gradient(circle,transparent_20%,rgba(0,218,243,0.05)_100%)]"></div>
+</div>
+<!-- TopAppBar (Floating) -->
+<header class="bg-[#0d1321]/40 backdrop-blur-md border-b border-cyan-400/10 flex justify-between items-center px-6 h-16 w-full fixed top-0 z-50">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-cyan-400" data-icon="explore">explore</span>
+<h1 class="font-['Space_Grotesk'] tracking-widest uppercase text-xl font-bold text-cyan-400">TW NAVIGATOR</h1>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2 bg-cyan-400/10 px-3 py-1 rounded-full border border-cyan-400/20">
+<span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+<span class="text-[10px] font-mono text-cyan-400 font-bold uppercase tracking-widest">Active</span>
+</div>
+<button class="text-slate-400 hover:bg-cyan-400/10 transition-colors p-2 rounded-lg">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+</div>
+</header>
+<!-- Floating Overlay Content -->
+<main class="relative z-10 pt-20 px-4 h-screen flex flex-col pointer-events-none">
+<!-- Instrument Overlay (Top) -->
+<div class="flex gap-2 w-full max-w-lg mx-auto pointer-events-auto">
+<!-- Velocity -->
+<div class="flex-1 glass-panel px-3 py-3 rounded-xl flex flex-col items-center border-t-2 border-t-primary">
+<span class="text-[8px] font-mono text-cyan-100/70 uppercase tracking-widest font-bold">Velocity</span>
+<div class="flex items-baseline gap-1">
+<span class="text-2xl font-headline font-bold text-primary speed-glow">24.8</span>
+<span class="text-[10px] font-headline text-cyan-100/50">kn</span>
 </div>
 </div>
-
-<!-- MODE -->
-<div class="mbar">
-<button class="mbtn on" id="bL" onclick="swM('live')">📡 LIVE GPS</button>
-<button class="mbtn" id="bD" onclick="swM('demo')">🎮 DEMO</button>
-</div>
-
-<!-- LOADING SCREEN -->
-<div id="LS"><div class="lw">
-<svg width="100" height="100" viewBox="0 0 120 120"><circle cx="60" cy="60" r="50" fill="none" stroke="rgba(201,168,76,.25)" stroke-width="1"/><circle cx="60" cy="60" r="35" fill="none" stroke="rgba(201,168,76,.25)" stroke-width=".5"/><circle cx="60" cy="60" r="20" fill="none" stroke="rgba(201,168,76,.25)" stroke-width=".5"/><circle cx="60" cy="60" r="2" fill="#C9A84C"/><g class="rsw"><line x1="60" y1="60" x2="60" y2="10" stroke="#00D4FF" stroke-width="1.5" opacity=".8"/><path d="M60,60 L60,10 A50,50 0 0,1 95,25 Z" fill="rgba(0,212,255,.15)" opacity=".35"/></g></svg>
-<div class="lm" id="lMsg">GPS-Signal wird gesucht…</div>
-<div class="lh">Tippe auf <b>🎮 DEMO</b> um die App mit simulierten Daten zu testen.</div>
-</div><div id="hCard" style="display:none"></div></div>
-
-<!-- DASHBOARD -->
-<div id="DS" style="display:none">
-
-<!-- NAV TABS -->
-<div class="nav-tabs">
-  <button class="nav-tab on" id="tabInst" onclick="switchTab('inst')"><span>🧭</span>COCKPIT</button>
-  <button class="nav-tab" id="tabMap" onclick="switchTab('map')"><span>🗺️</span>KARTE</button>
-  <button class="nav-tab" id="tabRec" onclick="switchTab('rec')"><span>📋</span>FAHRT</button>
-</div>
-
-<!-- ═══ PANEL 1: INSTRUMENTS ═══ -->
-<div class="panel on" id="panelInst">
-<div class="crd">
-  <div class="cl">
-    <span>🚀</span> Cockpit
-    <button class="rst-btn" onclick="resetInstruments()">↺ Reset Stats</button>
-  </div>
-  <div class="inst-grid">
-
-    <!-- SPEED -->
-    <div class="inst-section">
-      <div class="inst-label"><div class="dot" style="background:var(--cyan)"></div>GESCHWINDIGKEIT</div>
-      <div class="speed-main">
-        <div class="speed-val" id="vSpd">0.0</div>
-        <div class="speed-unit">km/h</div>
-      </div>
-      <div class="speed-secondary">
-        <div class="speed-sub"><div class="speed-sub-val spd-cyan" id="vKn">0.0</div><div class="speed-sub-unit">kn</div></div>
-        <div class="speed-sub"><div class="speed-sub-val spd-gold" id="vMx">0.0</div><div class="speed-sub-unit">max km/h</div></div>
-        <div class="speed-sub"><div class="speed-sub-val spd-green" id="vAv">0.0</div><div class="speed-sub-unit">ø km/h</div></div>
-      </div>
-    </div>
-
-    <!-- ALTITUDE -->
-    <div class="inst-section">
-      <div class="inst-label"><div class="dot" style="background:var(--green)"></div>HÖHE</div>
-      <div class="alt-main">
-        <div class="alt-val" id="vAlt">—</div>
-        <div class="alt-unit">m ü. NHN</div>
-      </div>
-      <div class="alt-secondary">
-        <div class="alt-sub"><div class="alt-sub-val" id="vFt" style="color:var(--cyan)">—</div><div class="alt-sub-unit">ft</div></div>
-        <div class="alt-sub"><div class="alt-sub-val" id="vAmn" style="color:var(--green)">—</div><div class="alt-sub-unit">min m</div></div>
-        <div class="alt-sub"><div class="alt-sub-val" id="vAmx" style="color:var(--gold)">—</div><div class="alt-sub-unit">max m</div></div>
-        <div class="alt-sub"><div class="alt-sub-val" id="vAdf" style="color:var(--white)">—</div><div class="alt-sub-unit">Δ m</div></div>
-      </div>
-      <div class="alt-zone" id="altZone" style="background:rgba(30,64,175,0.2);color:#60A5FA">KÜSTENNAH</div>
-    </div>
-
-    <!-- HEADING -->
-    <div class="inst-section">
-      <div class="inst-label"><div class="dot" style="background:var(--gold)"></div>KURS / HEADING</div>
-      <div class="hdg-main">
-        <div style="display:flex;align-items:baseline;gap:2px">
-          <div class="hdg-deg-val" id="vHdg">—</div>
-          <div class="hdg-deg-sym">°</div>
-        </div>
-        <div class="hdg-dir-text" id="vDir">—</div>
-        <div class="hdg-compass-wrap">
-          <svg viewBox="0 0 80 80" style="width:64px;height:64px">
-            <circle cx="40" cy="40" r="37" fill="none" stroke="var(--gold-dim)" stroke-width="0.5"/>
-            <circle cx="40" cy="40" r="30" fill="rgba(10,22,40,.4)" stroke="rgba(255,255,255,.03)" stroke-width="0.5"/>
-            <g id="miniCR"></g>
-            <polygon points="40,5 38,1 42,1" fill="var(--cyan)" style="filter:drop-shadow(0 0 3px var(--cyan))"/>
-            <circle cx="40" cy="40" r="1.5" fill="var(--gold)"/>
-          </svg>
-        </div>
-      </div>
-    </div>
-
-    <!-- DISTANCE -->
-    <div class="inst-section" style="border-bottom:none">
-      <div class="inst-label"><div class="dot" style="background:var(--white)"></div>DISTANZ</div>
-      <div class="dist-row" style="margin-top:0">
-        <div class="dist-box"><div class="dist-val" id="vDkm">0.000</div><div class="dist-lbl">Kilometer</div></div>
-        <div class="dist-box"><div class="dist-val" id="vDnm">0.000</div><div class="dist-lbl">Seemeilen</div></div>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-<!-- Sparklines card -->
-<div class="crd">
-  <div class="spark-row">
-    <div class="spark-box">
-      <div class="spark-label">Speed (60s)</div>
-      <canvas id="cSp" height="36" style="width:100%;height:36px"></canvas>
-    </div>
-    <div class="spark-box">
-      <div class="spark-label">Altitude (60s)</div>
-      <canvas id="cAl" height="36" style="width:100%;height:36px"></canvas>
-    </div>
-  </div>
+<!-- Heading -->
+<div class="flex-1 glass-panel px-3 py-3 rounded-xl flex flex-col items-center border-t-2 border-t-white">
+<span class="text-[8px] font-mono text-cyan-100/70 uppercase tracking-widest font-bold">Heading</span>
+<div class="flex items-baseline gap-1">
+<span class="text-2xl font-headline font-bold text-white">312°</span>
+<span class="text-[10px] font-headline text-secondary font-bold">NW</span>
 </div>
 </div>
-
-<!-- ═══ PANEL 2: MAP ═══ -->
-<div class="panel" id="panelMap">
-<div class="crd" style="padding:0;overflow:hidden;border-radius:16px">
-  <div id="mapBox"><div id="mapDiv"></div>
-    <div class="map-pos" id="pD" onclick="copyCoords()">
-      <div>
-        <div class="map-pos-coord" id="vLat">—</div>
-        <div class="map-pos-coord" id="vLon">—</div>
-        <div class="map-pos-dec" id="vLL">—</div>
-      </div>
-      <div class="ct2" id="cT">✓ Kopiert</div>
-    </div>
-  </div>
+<!-- Altitude -->
+<div class="flex-1 glass-panel px-3 py-3 rounded-xl flex flex-col items-center border-t-2 border-t-cyan-400/40">
+<span class="text-[8px] font-mono text-cyan-100/70 uppercase tracking-widest font-bold">Altitude</span>
+<div class="flex items-baseline gap-1">
+<span class="text-2xl font-headline font-bold text-white">142</span>
+<span class="text-[10px] font-mono text-cyan-100/50">m</span>
 </div>
 </div>
-
-<!-- ═══ PANEL 3: RECORDING ═══ -->
-<div class="panel" id="panelRec">
-<div class="crd">
-  <div class="cl"><span>⏺️</span> Aufzeichnung</div>
-  <div class="rec-bar">
-    <div class="rec-toggle on" id="recToggle" onclick="toggleRec()">
-      <div class="rec-dot"></div>
-      <div class="rec-switch"><div class="rec-knob"></div></div>
-      <span class="rec-label">AUFZEICHNUNG AN</span>
-    </div>
-    <button class="rec-reset" onclick="resetRec()">↺ RESET</button>
-  </div>
-
-  <!-- Live session stats -->
-  <div id="liveStats" style="margin-bottom:12px">
-    <div class="log-stats" id="liveStatGrid"></div>
-  </div>
 </div>
-
-<div class="crd">
-  <div class="log-title">
-    <span>📋 Fahrtenbuch</span>
-    <button class="log-clear" onclick="clearAllTrips()">Alle löschen</button>
-  </div>
-  <div id="tripLog"></div>
+<!-- Middle-Bottom Floaters -->
+<div class="mt-auto mb-28 w-full max-w-lg mx-auto space-y-3 pointer-events-auto">
+<!-- Position & Odometer Row (Floating Cards) -->
+<div class="flex gap-3">
+<!-- Current Position (Condensed) -->
+<div class="glass-panel p-3 rounded-xl flex-1">
+<div class="text-[9px] font-mono text-primary uppercase mb-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]" data-icon="location_on">location_on</span>
+                    Position
+                </div>
+<div class="flex flex-col">
+<span class="text-[10px] font-mono text-white">51° 30' 26" N</span>
+<span class="text-[10px] font-mono text-white">0° 7' 39" W</span>
 </div>
 </div>
-
-</div><!-- /DS -->
-</div><!-- /app -->
-
-<!-- STATUS BAR -->
-<div class="bar"><div id="stL"></div><div class="stx" id="stT">Warte auf GPS…</div></div>
-
-<!-- EDIT MODAL -->
-<div class="modal-overlay" id="editModal">
-<div class="modal">
-  <h3>Fahrt bearbeiten</h3>
-  <div class="modal-field"><label>Distanz (km)</label><input type="number" step="0.001" id="edKm"></div>
-  <div class="modal-field"><label>Max Speed (km/h)</label><input type="number" step="0.1" id="edMx"></div>
-  <div class="modal-field"><label>Ø Speed (km/h)</label><input type="number" step="0.1" id="edAv"></div>
-  <input type="hidden" id="edId">
-  <div class="modal-btns">
-    <button class="modal-btn cancel" onclick="closeEdit()">Abbrechen</button>
-    <button class="modal-btn save" onclick="saveEdit()">Speichern</button>
-  </div>
+<!-- Odometer (Condensed) -->
+<div class="glass-panel p-3 rounded-xl flex-1 border-r-2 border-secondary">
+<div class="text-[9px] font-mono text-on-surface-variant uppercase mb-1">Odometer</div>
+<div class="flex items-baseline gap-1">
+<span class="text-lg font-headline font-bold text-on-surface">1,284.5</span>
+<span class="text-[9px] font-mono text-on-surface-variant uppercase">nm</span>
 </div>
 </div>
-
-<script>
-/* ═══════════════════════════════════════════
-   TW NAVIGATOR — REBUILT
-   ═══════════════════════════════════════════ */
-
-const H=60,$=id=>document.getElementById(id),clamp=(v,a,b)=>Math.min(Math.max(v,a),b);
-const toKmh=s=>(s||0)*3.6,toFt=m=>(m||0)*3.28084;
-
-function toDMS(d,l){
-  const a=Math.abs(d),dg=Math.floor(a),mf=(a-dg)*60,m=Math.floor(mf),s=((mf-m)*60).toFixed(1);
-  return`${l?(d>=0?'N':'S'):(d>=0?'E':'W')} ${dg}° ${String(m).padStart(2,'0')}' ${s.padStart(4,'0')}"`;
-}
-function hTxt(d){
-  if(d==null)return'—';
-  const a=['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'];
-  return a[Math.round(((d%360+360)%360)/22.5)%16];
-}
-function fmtDT(d){return d.toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric'})+' '+d.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})}
-function haversine(a1,o1,a2,o2){const R=6371,dL=(a2-a1)*Math.PI/180,dO=(o2-o1)*Math.PI/180,x=Math.sin(dL/2)**2+Math.cos(a1*Math.PI/180)*Math.cos(a2*Math.PI/180)*Math.sin(dO/2)**2;return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x))}
-
-/* ═══ EMA SMOOTHER ═══ */
-const sm={speed:null,heading:null,altitude:null,lat:null,lon:null,lastLat:null,lastLon:null,lastT:null,
-  upd(r){
-    let rawSpd=r.speed;
-    if((rawSpd==null||rawSpd===0)&&this.lastLat!=null){
-      const now=Date.now(),dt=(now-this.lastT)/1000;
-      if(dt>0&&dt<10){
-        const d=haversine(this.lastLat,this.lastLon,r.latitude,r.longitude)*1000;
-        rawSpd=d/dt;
-      }
-    }
-    this.lastLat=r.latitude;this.lastLon=r.longitude;this.lastT=Date.now();
-    const rs=toKmh(rawSpd),si=rs<0.5?0:rs;
-    if(this.speed===null)this.speed=si;else this.speed+=.25*(si-this.speed);
-    if(this.speed<0.2)this.speed=0;
-    if(r.altitude!=null){if(this.altitude===null)this.altitude=r.altitude;else this.altitude+=.3*(r.altitude-this.altitude)}
-    if(r.heading!=null&&rs>=1.5){if(this.heading===null)this.heading=r.heading;else{let d=r.heading-this.heading;if(d>180)d-=360;if(d<-180)d+=360;this.heading=((this.heading+.2*d)%360+360)%360}}
-    if(this.lat===null){this.lat=r.latitude;this.lon=r.longitude}else{this.lat+=.4*(r.latitude-this.lat);this.lon+=.4*(r.longitude-this.lon)}
-    return{latitude:this.lat,longitude:this.lon,speed:this.speed,heading:this.heading,altitude:this.altitude,accuracy:r.accuracy};
-  },
-  rst(){this.speed=null;this.heading=null;this.altitude=null;this.lat=null;this.lon=null;this.lastLat=null;this.lastLon=null;this.lastT=null}
-};
-
-/* ═══ STATE ═══ */
-let mode='live',gps=null,lu=null,sH=[],aH=[],mxS=0,sS=0,sC=0,wId=null,dIv=null,dT=0,built=false;
-let totalDist=0,prevLat=null,prevLon=null,minAlt=Infinity,maxAlt=-Infinity;
-let wakeLock=null,mapInited=false,leafMap=null,leafMarker=null,mapPF=false,mapPT=null;
-let recording=true;
-let currentTab='inst';
-
-/* ═══ TAB SWITCHING ═══ */
-window.switchTab=function(tab){
-  currentTab=tab;
-  ['inst','map','rec'].forEach(t=>{
-    $('tab'+t.charAt(0).toUpperCase()+t.slice(1)).classList.toggle('on',t===tab);
-    $('panel'+t.charAt(0).toUpperCase()+t.slice(1)).classList.toggle('on',t===tab);
-  });
-  if(tab==='map'&&leafMap){
-    setTimeout(()=>leafMap.invalidateSize(),100);
-    if(gps&&!mapPF)leafMap.panTo([gps.latitude,gps.longitude]);
-  }
-  if(tab==='rec')renderLog();
-};
-
-/* ═══ SESSION LOGGING ═══ */
-const TK='twn_trips',AK='twn_active';
-let aS=null;
-function ldT(){try{return JSON.parse(localStorage.getItem(TK))||[]}catch(e){return[]}}
-function svT(t){localStorage.setItem(TK,JSON.stringify(t))}
-function startSess(){aS={id:Date.now(),st:new Date().toISOString(),et:null,km:0,nm:0,mx:0,av:0,_ss:0,_sc:0};svA()}
-function svA(){if(aS)localStorage.setItem(AK,JSON.stringify(aS))}
-function ldA(){try{const s=JSON.parse(localStorage.getItem(AK));if(s&&!s.et){aS=s;totalDist=s.km||0;mxS=s.mx||0;sS=s._ss||0;sC=s._sc||0;return true}}catch(e){}return false}
-function updSess(){if(!aS)return;aS.km=totalDist;aS.nm=totalDist*.539957;aS.mx=mxS;aS._ss=sS;aS._sc=sC;aS.av=sC>0?sS/sC:0;svA()}
-function endSess(){if(!aS)return;aS.et=new Date().toISOString();aS.km=totalDist;aS.nm=totalDist*.539957;aS.mx=mxS;aS.av=sC>0?sS/sC:0;delete aS._ss;delete aS._sc;if(aS.km>.001||aS.mx>1){const t=ldT();t.unshift(aS);if(t.length>50)t.length=50;svT(t)}aS=null;localStorage.removeItem(AK);renderLog()}
-window.delTrip=function(id){svT(ldT().filter(t=>t.id!==id));renderLog()};
-window.clearAllTrips=function(){if(confirm('Alle gespeicherten Fahrten löschen?')){svT([]);renderLog()}};
-
-/* ═══ RECORDING TOGGLE ═══ */
-window.toggleRec=function(){
-  recording=!recording;
-  const el=$('recToggle');
-  if(recording){
-    el.classList.remove('off');el.classList.add('on');
-    el.querySelector('.rec-label').textContent='AUFZEICHNUNG AN';
-    if(!aS)startSess();
-    reqWL();
-  } else {
-    el.classList.remove('on');el.classList.add('off');
-    el.querySelector('.rec-label').textContent='AUFZEICHNUNG AUS';
-    endSess();
-    if(wakeLock){try{wakeLock.release()}catch(e){}}
-  }
-  renderLog();
-};
-
-/* Reset current recording */
-window.resetRec=function(){
-  if(!confirm('Aktuelle Aufzeichnung zurücksetzen?'))return;
-  if(aS)endSess();
-  totalDist=0;mxS=0;sS=0;sC=0;prevLat=null;prevLon=null;minAlt=Infinity;maxAlt=-Infinity;
-  if(recording)startSess();
-  renderLog();
-  if(gps)upd(gps);
-};
-
-/* Reset instrument stats (max, avg, alt min/max) */
-window.resetInstruments=function(){
-  if(!confirm('Max/Durchschnitt/Höhen-Statistiken zurücksetzen?'))return;
-  mxS=0;sS=0;sC=0;minAlt=Infinity;maxAlt=-Infinity;
-  if(gps)upd(gps);
-};
-
-/* ═══ EDIT TRIP ═══ */
-let editingId=null;
-window.openEdit=function(id){
-  const trips=ldT();
-  const t=trips.find(x=>x.id===id);
-  if(!t)return;
-  editingId=id;
-  $('edKm').value=(t.km||0).toFixed(3);
-  $('edMx').value=(t.mx||0).toFixed(1);
-  $('edAv').value=(t.av||0).toFixed(1);
-  $('edId').value=id;
-  $('editModal').classList.add('open');
-};
-window.closeEdit=function(){
-  $('editModal').classList.remove('open');
-  editingId=null;
-};
-window.saveEdit=function(){
-  if(!editingId)return;
-  const trips=ldT();
-  const t=trips.find(x=>x.id===editingId);
-  if(!t){closeEdit();return}
-  t.km=parseFloat($('edKm').value)||0;
-  t.nm=t.km*.539957;
-  t.mx=parseFloat($('edMx').value)||0;
-  t.av=parseFloat($('edAv').value)||0;
-  svT(trips);
-  closeEdit();
-  renderLog();
-};
-
-/* ═══ RENDER LOG ═══ */
-function renderLog(){
-  const el=$('tripLog');if(!el)return;
-  let h='';
-  // Live stats
-  const ls=$('liveStatGrid');
-  if(ls){
-    if(aS&&recording){
-      const avg=sC>0?sS/sC:0;
-      ls.innerHTML=`
-        <div class="log-stat"><div class="log-stat-val">${totalDist.toFixed(3)}</div><div class="log-stat-lbl">km</div></div>
-        <div class="log-stat"><div class="log-stat-val">${(totalDist*.539957).toFixed(3)}</div><div class="log-stat-lbl">nm</div></div>
-        <div class="log-stat"><div class="log-stat-val">${mxS.toFixed(1)}</div><div class="log-stat-lbl">Max km/h</div></div>
-        <div class="log-stat"><div class="log-stat-val">${avg.toFixed(1)}</div><div class="log-stat-lbl">ø km/h</div></div>`;
-    } else {
-      ls.innerHTML='<div style="color:var(--dim);font-size:10px;padding:4px">Aufzeichnung pausiert</div>';
-    }
-  }
-  // Active session
-  if(aS&&recording){
-    const s=new Date(aS.st);
-    h+=`<div class="log-item log-active"><div class="log-dates"><span class="log-date"><b>${fmtDT(s)}</b></span><span class="log-active-badge">● AUFZEICHNUNG</span></div><div class="log-stats"><div class="log-stat"><div class="log-stat-val">${totalDist.toFixed(3)}</div><div class="log-stat-lbl">km</div></div><div class="log-stat"><div class="log-stat-val">${(totalDist*.539957).toFixed(3)}</div><div class="log-stat-lbl">nm</div></div><div class="log-stat"><div class="log-stat-val">${mxS.toFixed(1)}</div><div class="log-stat-lbl">Max km/h</div></div></div></div>`;
-  }
-  const trips=ldT();
-  if(!trips.length&&!aS){h='<div class="log-empty">Noch keine Fahrten aufgezeichnet</div>'}
-  else{trips.forEach(t=>{
-    const s=new Date(t.st),e=t.et?new Date(t.et):null;
-    h+=`<div class="log-item"><span class="log-edit" onclick="openEdit(${t.id})">✎ Edit</span><span class="log-del" onclick="delTrip(${t.id})">✕</span><div class="log-dates"><span class="log-date"><b>${fmtDT(s)}</b></span><span class="log-arrow">→</span><span class="log-date"><b>${e?fmtDT(e):'—'}</b></span></div><div class="log-stats"><div class="log-stat"><div class="log-stat-val">${(t.km||0).toFixed(3)}</div><div class="log-stat-lbl">km</div></div><div class="log-stat"><div class="log-stat-val">${(t.nm||0).toFixed(3)}</div><div class="log-stat-lbl">nm</div></div><div class="log-stat"><div class="log-stat-val">${(t.mx||0).toFixed(1)}</div><div class="log-stat-lbl">Max km/h</div></div><div class="log-stat"><div class="log-stat-val">${(t.av||0).toFixed(1)}</div><div class="log-stat-lbl">ø km/h</div></div></div></div>`;
-  })}
-  el.innerHTML=h;
-}
-
-/* ═══ WAKE LOCK ═══ */
-async function reqWL(){
-  try{
-    if('wakeLock' in navigator){
-      wakeLock=await navigator.wakeLock.request('screen');
-      $('wlB').classList.add('on');
-      wakeLock.addEventListener('release',()=>{$('wlB').classList.remove('on');wakeLock=null});
-    }
-  }catch(e){}
-}
-document.addEventListener('visibilitychange',()=>{
-  if(document.visibilityState==='visible'){
-    if(recording&&!wakeLock)reqWL();
-    // Re-acquire GPS if watch died
-    if(mode==='live'&&wId==null){startL()}
-  }
-  updSess();
-});
-setInterval(()=>{updSess();renderLog()},5000);
-window.addEventListener('beforeunload',()=>updSess());
-window.addEventListener('pagehide',()=>updSess());
-
-/* ═══ COPY COORDS ═══ */
-window.copyCoords=function(){
-  if(!gps)return;
-  const t=`${gps.latitude.toFixed(6)}, ${gps.longitude.toFixed(6)}`;
-  if(navigator.clipboard)navigator.clipboard.writeText(t).then(()=>{
-    $('cT').classList.add('on');setTimeout(()=>$('cT').classList.remove('on'),2000);
-  }).catch(()=>{});
-};
-
-/* ═══ DEMO GPS ═══ */
-function dGps(t){const b=t*.02;return{latitude:50.705+Math.sin(b*.7)*.008+Math.cos(b*.3)*.004,longitude:7.895+Math.cos(b*.5)*.012+Math.sin(b*.8)*.003,speed:Math.max(0,6+Math.sin(b*1.2)*4+Math.cos(b*2.5)*2.5+Math.sin(b*.3)*3)/3.6,heading:(((b*40)+Math.sin(b*.8)*60+Math.cos(b*1.5)*30)%360+360)%360,altitude:180+Math.sin(b*.4)*80+Math.cos(b*.9)*40,accuracy:3+Math.random()*2}}
-
-/* ═══ MAP ═══ */
-function initMap(lat,lon){
-  if(mapInited)return;mapInited=true;
-  leafMap=L.map('mapDiv',{zoomControl:false,attributionControl:false}).setView([lat,lon],15);
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{maxZoom:19}).addTo(leafMap);
-  leafMarker=L.circleMarker([lat,lon],{radius:7,color:'#00D4FF',fillColor:'#00D4FF',fillOpacity:.9,weight:2}).addTo(leafMap);
-  leafMap.on('mousedown touchstart',function(){mapPF=true;clearTimeout(mapPT);mapPT=setTimeout(function(){mapPF=false},10000)});
-  setTimeout(function(){leafMap.invalidateSize()},200);
-}
-function updateMap(lat,lon){
-  if(!mapInited)return initMap(lat,lon);
-  if(leafMarker)leafMarker.setLatLng([lat,lon]);
-  if(leafMap&&!mapPF)leafMap.panTo([lat,lon],{animate:true,duration:.5});
-}
-
-/* ═══ BUILD COMPASS ═══ */
-function buildCompass(){
-  const cr=$('miniCR');if(!cr)return;
-  for(let i=0;i<72;i++){
-    const a=i*5*Math.PI/180,mj=i%18===0,r1=mj?24:(i%9===0?26:28);
-    const l=document.createElementNS('http://www.w3.org/2000/svg','line');
-    l.setAttribute('x1',40+r1*Math.sin(a));l.setAttribute('y1',40-r1*Math.cos(a));
-    l.setAttribute('x2',40+30*Math.sin(a));l.setAttribute('y2',40-30*Math.cos(a));
-    l.setAttribute('stroke',mj?'var(--gold)':'var(--dim)');l.setAttribute('stroke-width',mj?'0.8':'.2');
-    cr.appendChild(l);
-  }
-  [['N',0,'var(--red)'],['E',90,'var(--gold)'],['S',180,'var(--gold)'],['W',270,'var(--gold)']].forEach(([lb,d,c])=>{
-    const a=d*Math.PI/180;
-    const t=document.createElementNS('http://www.w3.org/2000/svg','text');
-    t.setAttribute('x',40+20*Math.sin(a));t.setAttribute('y',40-20*Math.cos(a));
-    t.setAttribute('text-anchor','middle');t.setAttribute('dominant-baseline','central');
-    t.setAttribute('fill',c);t.setAttribute('font-size','7');t.setAttribute('font-weight','800');
-    t.textContent=lb;cr.appendChild(t);
-  });
-  const np=document.createElementNS('http://www.w3.org/2000/svg','polygon');
-  np.setAttribute('points','40,6 38.5,11 41.5,11');np.setAttribute('fill','var(--red)');
-  cr.appendChild(np);
-}
-
-/* ═══ SPARKLINES ═══ */
-function drawSp(id,data,col){
-  const c=$(id);if(!c)return;
-  const ctx=c.getContext('2d'),dpr=window.devicePixelRatio||1,w=c.clientWidth,h=c.clientHeight;
-  if(c.width!==w*dpr||c.height!==h*dpr){c.width=w*dpr;c.height=h*dpr}
-  ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,h);
-  if(!data||data.length<2)return;
-  const mn=Math.min(...data),mx=Math.max(...data),rng=mx-mn||1;
-  ctx.beginPath();ctx.moveTo(0,h);
-  data.forEach((v,i)=>ctx.lineTo((i/(data.length-1))*w,h-((v-mn)/rng)*(h-4)-2));
-  ctx.lineTo(w,h);ctx.closePath();
-  const g=ctx.createLinearGradient(0,0,0,h);
-  g.addColorStop(0,col+'4D');g.addColorStop(1,col+'00');
-  ctx.fillStyle=g;ctx.fill();
-  ctx.beginPath();
-  data.forEach((v,i)=>{const x=(i/(data.length-1))*w,y=h-((v-mn)/rng)*(h-4)-2;i===0?ctx.moveTo(x,y):ctx.lineTo(x,y)});
-  ctx.strokeStyle=col;ctx.lineWidth=1.5;ctx.lineJoin='round';ctx.stroke();
-}
-
-/* ═══ UPDATE DISPLAY ═══ */
-function upd(c){
-  const spd=c.speed,kn=spd/3.6*1.94384,alt=c.altitude,hdg=c.heading,avg=sC>0?sS/sC:0;
-
-  // Position (map overlay)
-  $('vLat').textContent=toDMS(c.latitude,true);
-  $('vLon').textContent=toDMS(c.longitude,false);
-  $('vLL').textContent=`${c.latitude.toFixed(6)}° / ${c.longitude.toFixed(6)}°`;
-  updateMap(c.latitude,c.longitude);
-
-  // Speed
-  $('vSpd').textContent=spd.toFixed(1);
-  $('vKn').textContent=kn.toFixed(1);
-  $('vMx').textContent=mxS.toFixed(1);
-  $('vAv').textContent=avg.toFixed(1);
-  $('vDkm').textContent=totalDist.toFixed(3);
-  $('vDnm').textContent=(totalDist*.539957).toFixed(3);
-  drawSp('cSp',sH,'#00D4FF');
-
-  // Altitude
-  const altV=alt||0;
-  $('vAlt').textContent=alt!=null?Math.round(alt):'—';
-  $('vFt').textContent=alt!=null?Math.round(toFt(alt)):'—';
-  $('vAmn').textContent=minAlt<Infinity?Math.round(minAlt):'—';
-  $('vAmx').textContent=maxAlt>-Infinity?Math.round(maxAlt):'—';
-  const df=maxAlt>-Infinity&&minAlt<Infinity?Math.round(maxAlt-minAlt):null;
-  $('vAdf').textContent=df!=null?df:'—';
-
-  // Altitude zone
-  const az=$('altZone');
-  if(altV>1500){az.textContent='HOCHGEBIRGE';az.style.background='rgba(120,53,15,0.2)';az.style.color='#D97706'}
-  else if(altV>800){az.textContent='GEBIRGE';az.style.background='rgba(201,168,76,0.15)';az.style.color='var(--gold)'}
-  else if(altV>200){az.textContent='HÜGELLAND';az.style.background='rgba(5,150,105,0.15)';az.style.color='var(--green)'}
-  else if(altV>50){az.textContent='FLACHLAND';az.style.background='rgba(52,211,153,0.15)';az.style.color='#34D399'}
-  else{az.textContent='KÜSTENNAH';az.style.background='rgba(30,64,175,0.15)';az.style.color='#60A5FA'}
-  drawSp('cAl',aH,'#34D399');
-
-  // Heading
-  if(hdg!=null){
-    $('vHdg').textContent=Math.round(hdg);
-    $('vDir').textContent=hTxt(hdg);
-    const cr=$('miniCR');
-    cr.style.transform=`rotate(${-hdg}deg)`;
-    cr.style.transformOrigin='40px 40px';
-    cr.style.transition='transform .5s cubic-bezier(.25,.46,.45,.94)';
-  }else{
-    $('vHdg').textContent='—';
-    $('vDir').textContent='—';
-  }
-
-  // Status bar
-  if(c.accuracy!=null){
-    const a=c.accuracy,g=a<10,o=a<30,col=g?'var(--green)':o?'var(--yellow)':'var(--red)';
-    $('stL').innerHTML=`<span class="adot" style="background:${col};box-shadow:0 0 6px ${col}"></span><span style="font-size:9px;color:${col}">±${Math.round(a)}m · ${g?'Exzellent':o?'Gut':'Niedrig'}</span>`;
-  }else if(mode==='demo'){
-    $('stL').innerHTML='<span style="color:var(--yellow);font-size:9px">🎮 Demo</span>';
-  }
-  $('stT').textContent=lu?lu.toLocaleTimeString('de-DE'):'—';
-}
-
-/* ═══ PROCESS GPS DATA ═══ */
-function proc(raw){
-  const first=!gps;lu=new Date();
-  const c=mode==='live'?sm.upd(raw):{latitude:raw.latitude,longitude:raw.longitude,speed:toKmh(raw.speed||0),heading:raw.heading,altitude:raw.altitude,accuracy:raw.accuracy};
-  gps=c;const spd=c.speed;
-
-  if(recording){
-    if(spd>0.3){sS+=spd;sC++}
-    if(spd>mxS)mxS=spd;
-    if(prevLat!=null&&prevLon!=null){
-      const d=haversine(prevLat,prevLon,c.latitude,c.longitude);
-      const minDist=(c.accuracy!=null&&c.accuracy>0)?c.accuracy/1000*0.5:0.003;
-      if(d>minDist&&d<0.5)totalDist+=d;
-    }
-    if(c.altitude!=null){if(c.altitude<minAlt)minAlt=c.altitude;if(c.altitude>maxAlt)maxAlt=c.altitude}
-  }
-  prevLat=c.latitude;prevLon=c.longitude;
-  sH.push(spd);if(sH.length>H)sH.shift();
-  aH.push(c.altitude||0);if(aH.length>H)aH.shift();
-
-  if(first){
-    buildCompass();
-    $('LS').style.display='none';
-    $('DS').style.display='block';
-    initMap(c.latitude,c.longitude);
-  }
-  upd(c);
-}
-
-/* ═══ RESET ═══ */
-function resetAll(){
-  gps=null;sH=[];aH=[];mxS=0;sS=0;sC=0;lu=null;sm.rst();
-  totalDist=0;prevLat=null;prevLon=null;minAlt=Infinity;maxAlt=-Infinity;
-  if(leafMap){leafMap.remove();leafMap=null;leafMarker=null}
-  mapInited=false;built=false;
-}
-
-/* ═══ START/STOP ═══ */
-function startL(){
-  if(!navigator.geolocation){$('lMsg').textContent='Geolocation nicht unterstützt.';return}
-  $('LS').style.display='block';$('DS').style.display='none';
-  $('lMsg').textContent='GPS-Signal wird gesucht…';$('hCard').style.display='none';
-  if(recording){reqWL();if(!ldA())startSess()}
-  renderLog();
-  wId=navigator.geolocation.watchPosition(
-    p=>proc(p.coords),
-    e=>{
-      if(e.code===1){
-        $('lMsg').textContent='Standortzugriff verweigert.';
-        $('hCard').style.display='block';
-        $('hCard').innerHTML=`<div class="hc"><h3>📡 GPS blockiert</h3><p>So behebst du das:</p><ol><li>Tippe auf das <b>🔒 Schloss</b> in der Adressleiste</li><li><b>Berechtigungen → Standort → Zulassen</b></li><li>Seite neu laden</li></ol><p style="margin-top:8px"><b>Tipp:</b> file://-URLs unterstützen kein GPS. Nutze GitHub Pages oder den Demo-Modus!</p><button class="rb" onclick="rGps()">🔄 Erneut versuchen</button></div>`;
-      }else $('lMsg').textContent=e.code===2?'GPS nicht verfügbar.':'Positionsfehler.';
-    },
-    {enableHighAccuracy:true,maximumAge:1000,timeout:10000}
-  );
-}
-function stopL(){if(wId!=null){navigator.geolocation.clearWatch(wId);wId=null}}
-function startD(){dT=0;startSess();proc(dGps(0));dIv=setInterval(()=>{dT++;proc(dGps(dT))},1000);renderLog()}
-function stopD(){if(dIv){clearInterval(dIv);dIv=null}}
-
-window.swM=function(m){
-  if(m===mode)return;endSess();stopL();stopD();resetAll();
-  mode=m;
-  $('bL').classList.toggle('on',m==='live');
-  $('bD').classList.toggle('on',m==='demo');
-  $('dB').classList.toggle('on',m==='demo');
-  $('hCard').style.display='none';
-  if(m==='live')startL();else startD();
-};
-window.rGps=function(){$('hCard').style.display='none';endSess();stopL();resetAll();startSess();startL()};
-
-/* ═══ INIT ═══ */
-renderLog();startL();
-</script>
-</body>
-</html>
+</div>
+<!-- Mini Recording Tooltip / Action -->
+<div class="flex justify-between items-center bg-secondary/10 backdrop-blur-md border border-secondary/30 p-2 px-4 rounded-full">
+<div class="flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse"></span>
+<span class="text-[10px] font-mono text-secondary font-bold uppercase tracking-wider">Log Active</span>
+</div>
+<div class="text-[10px] font-mono text-white/60">2,378.9 km Total</div>
+</div>
+</div>
+<!-- Center Aim (Floating) -->
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none opacity-40">
+<div class="w-12 h-12 border border-cyan-400/30 rounded-full flex items-center justify-center">
+<div class="w-1 h-1 bg-cyan-400 rounded-full"></div>
+</div>
+</div>
+<!-- Location Recenter Button (Floating Bottom Right) -->
+<div class="absolute bottom-28 right-4 pointer-events-auto">
+<button class="bg-primary p-3 rounded-full shadow-[0_0_20px_rgba(0,218,243,0.4)] transition-transform active:scale-90">
+<span class="material-symbols-outlined text-on-primary text-2xl" data-icon="my_location">my_location</span>
+</button>
+</div>
+</main>
+<!-- BottomNavBar (Floating) -->
+<nav class="bg-[#0d1321]/80 backdrop-blur-xl fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-6 pt-2 z-50 border-t border-cyan-400/15 shadow-[0_-20px_40px_rgba(0,0,0,0.6)]">
+<!-- Cockpit Tab (Active) -->
+<a class="flex flex-col items-center justify-center text-cyan-400 bg-cyan-400/10 rounded-2xl px-6 py-2 border-t-2 border-cyan-400 transition-all duration-300" href="#">
+<span class="material-symbols-outlined text-2xl" data-icon="speed">speed</span>
+<span class="font-['Space_Grotesk'] text-[10px] uppercase font-bold tracking-widest mt-1">Cockpit</span>
+</a>
+<!-- Map Tab -->
+<a class="flex flex-col items-center justify-center text-slate-500 py-2 opacity-60 hover:text-cyan-300 transition-all duration-300" href="#">
+<span class="material-symbols-outlined text-2xl" data-icon="map">map</span>
+<span class="font-['Space_Grotesk'] text-[10px] uppercase font-bold tracking-widest mt-1">Map</span>
+</a>
+<!-- Recording Tab -->
+<a class="flex flex-col items-center justify-center text-slate-500 py-2 opacity-60 hover:text-cyan-300 transition-all duration-300" href="#">
+<span class="material-symbols-outlined text-2xl" data-icon="history">history</span>
+<span class="font-['Space_Grotesk'] text-[10px] uppercase font-bold tracking-widest mt-1">Journal</span>
+</a>
+</nav>
+</body></html>
