@@ -1,70 +1,32 @@
 <!DOCTYPE html>
 
-<html class="dark" lang="en"><head>
+<html class="dark" lang="de"><head>
 <meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>TW Navigator - Luxury Maritime Bridge</title>
+<meta content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
+<title>TW Navigator - Aurelian Deep</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" rel="stylesheet"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
             theme: {
                 extend: {
                     colors: {
-                        "on-secondary-fixed-variant": "#574500",
-                        "on-primary-fixed-variant": "#004f58",
-                        "tertiary-fixed-dim": "#00daf3",
-                        "on-background": "#dde2f6",
-                        "on-error-container": "#ffdad6",
-                        "on-error": "#690005",
                         "primary": "#00daf3",
-                        "on-secondary-fixed": "#241a00",
-                        "surface-variant": "#2f3444",
-                        "tertiary-fixed": "#9cf0ff",
-                        "surface-container-lowest": "#080e1c",
-                        "surface-bright": "#333949",
-                        "surface": "#0d1321",
-                        "error": "#ffb4ab",
-                        "surface-container-highest": "#2f3444",
-                        "on-tertiary-fixed-variant": "#004f58",
-                        "primary-fixed": "#9cf0ff",
-                        "on-primary-fixed": "#001f24",
-                        "surface-dim": "#0d1321",
-                        "on-secondary-container": "#342800",
-                        "outline-variant": "#45464c",
-                        "primary-container": "#000d0f",
-                        "tertiary-container": "#000d10",
                         "secondary": "#e9c349",
-                        "on-primary-container": "#008696",
-                        "surface-container-high": "#242a39",
-                        "on-primary": "#00363d",
-                        "surface-container-low": "#161b2a",
-                        "surface-container": "#1a1f2e",
-                        "on-secondary": "#3c2f00",
-                        "secondary-fixed-dim": "#e9c349",
-                        "tertiary": "#00daf3",
-                        "inverse-surface": "#dde2f6",
-                        "outline": "#909096",
-                        "on-tertiary-fixed": "#001f24",
-                        "on-tertiary": "#00363d",
+                        "surface": "#0d1321",
+                        "background": "#080e1c",
                         "on-surface": "#dde2f6",
-                        "secondary-fixed": "#ffe088",
-                        "secondary-container": "#af8d11",
-                        "on-surface-variant": "#c6c6cc",
-                        "error-container": "#93000a",
-                        "background": "#0d1321",
-                        "inverse-primary": "#006875",
-                        "inverse-on-surface": "#2b3040",
-                        "primary-fixed-dim": "#00daf3",
-                        "surface-tint": "#00daf3",
-                        "on-tertiary-container": "#008696"
+                        "on-surface-variant": "#909096",
                     },
                     fontFamily: {
                         "headline": ["Space Grotesk"],
                         "body": ["Inter"],
-                        "label": ["Space Grotesk"],
                         "mono": ["JetBrains Mono"]
                     },
                     borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
@@ -74,7 +36,7 @@
     </script>
 <style>
         .glass-panel {
-            background: rgba(8, 14, 28, 0.7);
+            background: rgba(8, 14, 28, 0.75);
             backdrop-filter: blur(16px);
             border: 1px solid rgba(0, 218, 243, 0.2);
         }
@@ -87,130 +49,430 @@
             font-family: 'Inter', sans-serif;
             overflow: hidden;
         }
-        .map-container {
+        #mapDiv {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
             z-index: 0;
+            background: #080e1c;
         }
+        /* Leaflet Filter to match dark theme */
+        .leaflet-tile-container {
+            filter: grayscale(1) invert(1) brightness(0.6) contrast(1.2) hue-rotate(180deg);
+        }
+        .panel { display: none; }
+        .panel.active { display: flex; }
+        
+        /* Modal Style */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 100;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            backdrop-filter: blur(4px);
+        }
+        .modal-overlay.open { display: flex; }
     </style>
 </head>
 <body class="min-h-screen">
 <!-- Full-Screen Map Background -->
-<div class="map-container">
-<img class="w-full h-full object-cover grayscale brightness-[0.4] contrast-125" data-alt="top-down nautical navigation map with blue ocean tones and digital grid overlay in a dark maritime aesthetic" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCqYybD8U1RFPTt44suGr6tvtuIXZqHkxnO1LJNY48Ubv3Hd2lTSCeCsWrD92Up7-_qhfMFifCO9VtOYMwrOmOBMOIiIbnWTH2q7tp_-L2zR0OeZIHj4YrHCOCwIM4waj28QtDWpMjhl1T82lnIvCCTm-rHM_3rJ1KJHKYEwoXKPWBNQo8irbRbXIL5uIlq91IdLvmwQkkHs57wPol5d9cl8llkT9YimSkZmqzJyWVuCVFU5MObVYa6T6sxypchH-IvW-UbfwxRcPC3"/>
-<!-- Radar/Compass Decorative Overlay -->
-<div class="absolute inset-0 pointer-events-none opacity-20 bg-[radial-gradient(circle,transparent_20%,rgba(0,218,243,0.05)_100%)]"></div>
-</div>
+<div id="mapDiv"></div>
 <!-- TopAppBar (Floating) -->
-<header class="bg-[#0d1321]/40 backdrop-blur-md border-b border-cyan-400/10 flex justify-between items-center px-6 h-16 w-full fixed top-0 z-50">
+<header class="bg-[#0d1321]/60 backdrop-blur-md border-b border-cyan-400/10 flex justify-between items-center px-6 h-16 w-full fixed top-0 z-50">
 <div class="flex items-center gap-3">
 <span class="material-symbols-outlined text-cyan-400" data-icon="explore">explore</span>
 <h1 class="font-['Space_Grotesk'] tracking-widest uppercase text-xl font-bold text-cyan-400">TW NAVIGATOR</h1>
 </div>
 <div class="flex items-center gap-4">
+<div class="hidden bg-yellow-400/20 text-yellow-400 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-tighter border border-yellow-400/30" id="demoBadge">Demo</div>
 <div class="flex items-center gap-2 bg-cyan-400/10 px-3 py-1 rounded-full border border-cyan-400/20">
-<span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
-<span class="text-[10px] font-mono text-cyan-400 font-bold uppercase tracking-widest">Active</span>
+<span class="w-2 h-2 rounded-full bg-slate-500" id="wlDot"></span>
+<span class="text-[10px] font-mono text-cyan-400 font-bold uppercase tracking-widest" id="stT">Suche...</span>
 </div>
-<button class="text-slate-400 hover:bg-cyan-400/10 transition-colors p-2 rounded-lg">
+<button class="text-slate-400 hover:bg-cyan-400/10 transition-colors p-2 rounded-lg" onclick="toggleModeMenu()">
 <span class="material-symbols-outlined" data-icon="settings">settings</span>
 </button>
 </div>
 </header>
-<!-- Floating Overlay Content -->
-<main class="relative z-10 pt-20 px-4 h-screen flex flex-col pointer-events-none">
-<!-- Instrument Overlay (Top) -->
+<!-- Mode Menu (Hidden by default) -->
+<div class="fixed top-16 right-4 z-[60] hidden bg-surface/90 backdrop-blur-xl border border-primary/20 p-4 rounded-xl shadow-2xl flex flex-col gap-2" id="modeMenu">
+<button class="px-4 py-2 rounded-lg text-sm font-bold uppercase tracking-widest border border-primary/40 bg-primary/10 text-primary" id="bL" onclick="swM('live')">Live GPS</button>
+<button class="px-4 py-2 rounded-lg text-sm font-bold uppercase tracking-widest border border-on-surface-variant text-on-surface-variant" id="bD" onclick="swM('demo')">Demo Modus</button>
+<hr class="border-primary/10 my-1"/>
+<button class="text-[10px] uppercase font-bold text-red-400 hover:bg-red-400/10 p-2 rounded" onclick="resetInstruments()">Stats Reset</button>
+</div>
+<!-- Main Content Area -->
+<main class="relative z-10 pt-20 px-4 h-screen flex flex-col pointer-events-none pb-28">
+<!-- Cockpit Panel -->
+<div class="panel active flex-col flex-grow" id="panelCockpit">
+<!-- Instrument Overlays (Top) -->
 <div class="flex gap-2 w-full max-w-lg mx-auto pointer-events-auto">
-<!-- Velocity -->
 <div class="flex-1 glass-panel px-3 py-3 rounded-xl flex flex-col items-center border-t-2 border-t-primary">
 <span class="text-[8px] font-mono text-cyan-100/70 uppercase tracking-widest font-bold">Velocity</span>
 <div class="flex items-baseline gap-1">
-<span class="text-2xl font-headline font-bold text-primary speed-glow">24.8</span>
+<span class="text-2xl font-headline font-bold text-primary speed-glow" id="vSpd">0.0</span>
 <span class="text-[10px] font-headline text-cyan-100/50">kn</span>
 </div>
 </div>
-<!-- Heading -->
 <div class="flex-1 glass-panel px-3 py-3 rounded-xl flex flex-col items-center border-t-2 border-t-white">
 <span class="text-[8px] font-mono text-cyan-100/70 uppercase tracking-widest font-bold">Heading</span>
 <div class="flex items-baseline gap-1">
-<span class="text-2xl font-headline font-bold text-white">312°</span>
-<span class="text-[10px] font-headline text-secondary font-bold">NW</span>
+<span class="text-2xl font-headline font-bold text-white" id="vHdg">—</span>
+<span class="text-[10px] font-headline text-secondary font-bold" id="vDir">—</span>
 </div>
 </div>
-<!-- Altitude -->
 <div class="flex-1 glass-panel px-3 py-3 rounded-xl flex flex-col items-center border-t-2 border-t-cyan-400/40">
 <span class="text-[8px] font-mono text-cyan-100/70 uppercase tracking-widest font-bold">Altitude</span>
 <div class="flex items-baseline gap-1">
-<span class="text-2xl font-headline font-bold text-white">142</span>
+<span class="text-2xl font-headline font-bold text-white" id="vAlt">—</span>
 <span class="text-[10px] font-mono text-cyan-100/50">m</span>
 </div>
 </div>
 </div>
-<!-- Middle-Bottom Floaters -->
-<div class="mt-auto mb-28 w-full max-w-lg mx-auto space-y-3 pointer-events-auto">
-<!-- Position & Odometer Row (Floating Cards) -->
-<div class="flex gap-3">
-<!-- Current Position (Condensed) -->
-<div class="glass-panel p-3 rounded-xl flex-1">
-<div class="text-[9px] font-mono text-primary uppercase mb-1 flex items-center gap-1">
-<span class="material-symbols-outlined text-[12px]" data-icon="location_on">location_on</span>
-                    Position
-                </div>
-<div class="flex flex-col">
-<span class="text-[10px] font-mono text-white">51° 30' 26" N</span>
-<span class="text-[10px] font-mono text-white">0° 7' 39" W</span>
-</div>
-</div>
-<!-- Odometer (Condensed) -->
-<div class="glass-panel p-3 rounded-xl flex-1 border-r-2 border-secondary">
-<div class="text-[9px] font-mono text-on-surface-variant uppercase mb-1">Odometer</div>
-<div class="flex items-baseline gap-1">
-<span class="text-lg font-headline font-bold text-on-surface">1,284.5</span>
-<span class="text-[9px] font-mono text-on-surface-variant uppercase">nm</span>
-</div>
-</div>
-</div>
-<!-- Mini Recording Tooltip / Action -->
-<div class="flex justify-between items-center bg-secondary/10 backdrop-blur-md border border-secondary/30 p-2 px-4 rounded-full">
-<div class="flex items-center gap-2">
-<span class="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse"></span>
-<span class="text-[10px] font-mono text-secondary font-bold uppercase tracking-wider">Log Active</span>
-</div>
-<div class="text-[10px] font-mono text-white/60">2,378.9 km Total</div>
-</div>
-</div>
-<!-- Center Aim (Floating) -->
-<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none opacity-40">
+<!-- Center Aim Overlay -->
+<div class="flex-grow flex items-center justify-center opacity-40">
 <div class="w-12 h-12 border border-cyan-400/30 rounded-full flex items-center justify-center">
 <div class="w-1 h-1 bg-cyan-400 rounded-full"></div>
 </div>
 </div>
-<!-- Location Recenter Button (Floating Bottom Right) -->
-<div class="absolute bottom-28 right-4 pointer-events-auto">
-<button class="bg-primary p-3 rounded-full shadow-[0_0_20px_rgba(0,218,243,0.4)] transition-transform active:scale-90">
+<!-- Cockpit Bottom Floaters -->
+<div class="mt-auto w-full max-w-lg mx-auto space-y-3 pointer-events-auto">
+<div class="flex gap-3">
+<div class="glass-panel p-3 rounded-xl flex-1 cursor-pointer active:scale-95 transition-transform" onclick="copyCoords()">
+<div class="text-[9px] font-mono text-primary uppercase mb-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]" data-icon="location_on">location_on</span> Position
+                    </div>
+<div class="flex flex-col">
+<span class="text-[10px] font-mono text-white" id="vLat">—</span>
+<span class="text-[10px] font-mono text-white" id="vLon">—</span>
+</div>
+<div class="absolute inset-0 bg-primary/20 opacity-0 pointer-events-none flex items-center justify-center rounded-xl transition-opacity" id="copyToast">
+<span class="text-[8px] font-bold text-white">KOPIERT</span>
+</div>
+</div>
+<div class="glass-panel p-3 rounded-xl flex-1 border-r-2 border-secondary">
+<div class="text-[9px] font-mono text-on-surface-variant uppercase mb-1">Odometer</div>
+<div class="flex items-baseline gap-1">
+<span class="text-lg font-headline font-bold text-on-surface" id="vDnm">0.000</span>
+<span class="text-[9px] font-mono text-on-surface-variant uppercase">nm</span>
+</div>
+</div>
+</div>
+<div class="flex justify-between items-center bg-secondary/10 backdrop-blur-md border border-secondary/30 p-2 px-4 rounded-full">
+<div class="flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-slate-500" id="recDot"></span>
+<span class="text-[10px] font-mono text-secondary font-bold uppercase tracking-wider" id="recStatusLabel">Log Inaktiv</span>
+</div>
+<div class="text-[10px] font-mono text-white/60" id="vDkmTotal">0.000 km Total</div>
+</div>
+</div>
+</div>
+<!-- Map Panel (Minimal Overlay) -->
+<div class="panel flex-col flex-grow" id="panelMap">
+<div class="mt-auto mb-4 w-full max-w-lg mx-auto pointer-events-auto flex justify-end">
+<button class="bg-primary p-3 rounded-full shadow-[0_0_20px_rgba(0,218,243,0.4)] active:scale-90 transition-transform" onclick="recenterMap()">
 <span class="material-symbols-outlined text-on-primary text-2xl" data-icon="my_location">my_location</span>
 </button>
 </div>
+</div>
+<!-- Journal Panel -->
+<div class="panel flex-col flex-grow overflow-hidden pointer-events-auto" id="panelJournal">
+<div class="glass-panel rounded-xl overflow-hidden flex flex-col max-h-full">
+<div class="px-4 py-3 flex justify-between items-center bg-surface/80 border-b border-primary/20">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-sm" data-icon="history">history</span>
+<h2 class="font-headline font-bold text-[11px] tracking-wide uppercase">Fahrtenbuch</h2>
+</div>
+<div class="flex gap-2">
+<button class="bg-red-500/20 text-red-500 text-[9px] font-bold px-2 py-1 rounded uppercase border border-red-500/30" id="recToggleButton" onclick="toggleRec()">Start</button>
+<button class="bg-white/5 text-white/60 text-[9px] font-bold px-2 py-1 rounded uppercase" onclick="clearAllTrips()">Reset All</button>
+</div>
+</div>
+<div class="overflow-y-auto divide-y divide-primary/5 flex-grow p-2 space-y-2" id="tripLog">
+<!-- Log entries injected here -->
+<div class="text-center py-8 text-on-surface-variant text-xs italic">Keine Einträge vorhanden</div>
+</div>
+</div>
+</div>
 </main>
 <!-- BottomNavBar (Floating) -->
-<nav class="bg-[#0d1321]/80 backdrop-blur-xl fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-6 pt-2 z-50 border-t border-cyan-400/15 shadow-[0_-20px_40px_rgba(0,0,0,0.6)]">
-<!-- Cockpit Tab (Active) -->
-<a class="flex flex-col items-center justify-center text-cyan-400 bg-cyan-400/10 rounded-2xl px-6 py-2 border-t-2 border-cyan-400 transition-all duration-300" href="#">
+<nav class="bg-[#0d1321]/90 backdrop-blur-xl fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-6 pt-2 z-50 border-t border-cyan-400/15 shadow-[0_-20px_40px_rgba(0,0,0,0.6)]" id="bottomNav">
+<a class="flex flex-col items-center justify-center text-cyan-400 bg-cyan-400/10 rounded-2xl px-6 py-2 border-t-2 border-cyan-400 transition-all duration-300" href="javascript:void(0)" id="navCockpit" onclick="switchTab('Cockpit')">
 <span class="material-symbols-outlined text-2xl" data-icon="speed">speed</span>
 <span class="font-['Space_Grotesk'] text-[10px] uppercase font-bold tracking-widest mt-1">Cockpit</span>
 </a>
-<!-- Map Tab -->
-<a class="flex flex-col items-center justify-center text-slate-500 py-2 opacity-60 hover:text-cyan-300 transition-all duration-300" href="#">
+<a class="flex flex-col items-center justify-center text-slate-500 py-2 opacity-60 hover:text-cyan-300 transition-all duration-300" href="javascript:void(0)" id="navMap" onclick="switchTab('Map')">
 <span class="material-symbols-outlined text-2xl" data-icon="map">map</span>
-<span class="font-['Space_Grotesk'] text-[10px] uppercase font-bold tracking-widest mt-1">Map</span>
+<span class="font-['Space_Grotesk'] text-[10px] uppercase font-bold tracking-widest mt-1">Karte</span>
 </a>
-<!-- Recording Tab -->
-<a class="flex flex-col items-center justify-center text-slate-500 py-2 opacity-60 hover:text-cyan-300 transition-all duration-300" href="#">
+<a class="flex flex-col items-center justify-center text-slate-500 py-2 opacity-60 hover:text-cyan-300 transition-all duration-300" href="javascript:void(0)" id="navJournal" onclick="switchTab('Journal')">
 <span class="material-symbols-outlined text-2xl" data-icon="history">history</span>
 <span class="font-['Space_Grotesk'] text-[10px] uppercase font-bold tracking-widest mt-1">Journal</span>
 </a>
 </nav>
+<!-- Edit Modal -->
+<div class="modal-overlay" id="editModal">
+<div class="bg-surface border border-primary/30 p-6 rounded-2xl w-full max-w-xs shadow-2xl">
+<h3 class="text-primary font-headline font-bold uppercase tracking-widest mb-4">Fahrt bearbeiten</h3>
+<div class="space-y-3">
+<div>
+<label class="block text-[10px] uppercase text-on-surface-variant mb-1">Distanz (km)</label>
+<input class="w-full bg-white/5 border border-white/10 rounded-lg p-2 text-white font-mono outline-none focus:border-primary" id="edKm" step="0.001" type="number"/>
+</div>
+<div>
+<label class="block text-[10px] uppercase text-on-surface-variant mb-1">Max Speed (km/h)</label>
+<input class="w-full bg-white/5 border border-white/10 rounded-lg p-2 text-white font-mono outline-none focus:border-primary" id="edMx" step="0.1" type="number"/>
+</div>
+<input id="edId" type="hidden"/>
+<div class="flex gap-2 pt-2">
+<button class="flex-1 bg-white/5 p-2 rounded-lg text-xs font-bold uppercase" onclick="closeEdit()">Abbrechen</button>
+<button class="flex-1 bg-primary text-background p-2 rounded-lg text-xs font-bold uppercase" onclick="saveEdit()">Speichern</button>
+</div>
+</div>
+</div>
+</div>
+<script>
+/* --- LOGIC FROM TEXT_2 --- */
+const $ = id => document.getElementById(id);
+const toKmh = s => (s || 0) * 3.6;
+const toKn = s => (s || 0) * 1.94384;
+
+function toDMS(d, l) {
+    const a = Math.abs(d), dg = Math.floor(a), mf = (a - dg) * 60, m = Math.floor(mf), s = ((mf - m) * 60).toFixed(1);
+    return `${l ? (d >= 0 ? 'N' : 'S') : (d >= 0 ? 'E' : 'W')} ${dg}° ${String(m).padStart(2, '0')}' ${s.padStart(4, '0')}"`;
+}
+
+function hTxt(d) {
+    if (d == null) return '—';
+    const a = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'];
+    return a[Math.round(((d % 360 + 360) % 360) / 22.5) % 16];
+}
+
+function haversine(a1, o1, a2, o2) {
+    const R = 6371, dL = (a2 - a1) * Math.PI / 180, dO = (o2 - o1) * Math.PI / 180, x = Math.sin(dL / 2) ** 2 + Math.cos(a1 * Math.PI / 180) * Math.cos(a2 * Math.PI / 180) * Math.sin(dO / 2) ** 2;
+    return R * 2 * Math.atan2(Math.sqrt(x), Math.sqrt(1 - x));
+}
+
+/* EMA SMOOTHER */
+const sm = {
+    speed: null, heading: null, altitude: null, lat: null, lon: null, lastLat: null, lastLon: null, lastT: null,
+    upd(r) {
+        let rawSpd = r.speed;
+        if ((rawSpd == null || rawSpd === 0) && this.lastLat != null) {
+            const now = Date.now(), dt = (now - this.lastT) / 1000;
+            if (dt > 0 && dt < 10) {
+                const d = haversine(this.lastLat, this.lastLon, r.latitude, r.longitude) * 1000;
+                rawSpd = d / dt;
+            }
+        }
+        this.lastLat = r.latitude; this.lastLon = r.longitude; this.lastT = Date.now();
+        const rs = rawSpd < 0.15 ? 0 : rawSpd;
+        if (this.speed === null) this.speed = rs; else this.speed += 0.25 * (rs - this.speed);
+        if (r.altitude != null) { if (this.altitude === null) this.altitude = r.altitude; else this.altitude += 0.3 * (r.altitude - this.altitude) }
+        if (r.heading != null && rs >= 0.4) {
+            if (this.heading === null) this.heading = r.heading;
+            else { let d = r.heading - this.heading; if (d > 180) d -= 360; if (d < -180) d += 360; this.heading = ((this.heading + 0.2 * d) % 360 + 360) % 360 }
+        }
+        if (this.lat === null) { this.lat = r.latitude; this.lon = r.longitude } else { this.lat += 0.4 * (r.latitude - this.lat); this.lon += 0.4 * (r.longitude - this.lon) }
+        return { latitude: this.lat, longitude: this.lon, speed: this.speed, heading: this.heading, altitude: this.altitude, accuracy: r.accuracy };
+    },
+    rst() { this.speed = null; this.heading = null; this.altitude = null; this.lat = null; this.lon = null; this.lastLat = null; this.lastLon = null; this.lastT = null }
+};
+
+/* STATE */
+let mode = 'live', gps = null, mxS = 0, totalDist = 0, prevLat = null, prevLon = null, recording = false, aS = null;
+let leafMap = null, leafMarker = null, mapPF = false, mapPT = null, wId = null, dIv = null, dT = 0;
+const TK = 'twn_trips', AK = 'twn_active';
+
+/* TAB SWITCHING */
+function switchTab(tab) {
+    ['Cockpit', 'Map', 'Journal'].forEach(t => {
+        $(`panel${t}`).classList.toggle('active', t === tab);
+        const nav = $(`nav${t}`);
+        if (t === tab) {
+            nav.classList.add('text-cyan-400', 'bg-cyan-400/10', 'rounded-2xl', 'px-6', 'border-t-2', 'border-cyan-400');
+            nav.classList.remove('text-slate-500', 'opacity-60');
+        } else {
+            nav.classList.remove('text-cyan-400', 'bg-cyan-400/10', 'rounded-2xl', 'px-6', 'border-t-2', 'border-cyan-400');
+            nav.classList.add('text-slate-500', 'opacity-60');
+        }
+    });
+    if (tab === 'Map' && leafMap) {
+        setTimeout(() => leafMap.invalidateSize(), 100);
+        if (gps) leafMap.panTo([gps.latitude, gps.longitude]);
+    }
+}
+
+/* SESSION LOGIC */
+function ldT() { try { return JSON.parse(localStorage.getItem(TK)) || [] } catch (e) { return [] } }
+function svT(t) { localStorage.setItem(TK, JSON.stringify(t)) }
+function startSess() { aS = { id: Date.now(), st: new Date().toISOString(), km: 0, mx: 0 }; svA() }
+function svA() { if (aS) localStorage.setItem(AK, JSON.stringify(aS)) }
+function endSess() {
+    if (!aS) return;
+    aS.et = new Date().toISOString(); aS.km = totalDist; aS.mx = mxS;
+    if (aS.km > 0.005) { const t = ldT(); t.unshift(aS); if (t.length > 50) t.length = 50; svT(t) }
+    aS = null; localStorage.removeItem(AK); renderLog();
+}
+
+function toggleRec() {
+    recording = !recording;
+    const btn = $('recToggleButton');
+    const dot = $('recDot');
+    const label = $('recStatusLabel');
+    if (recording) {
+        btn.textContent = 'Stop';
+        btn.classList.replace('bg-red-500/20', 'bg-red-500');
+        btn.classList.replace('text-red-500', 'text-white');
+        dot.classList.replace('bg-slate-500', 'bg-secondary');
+        dot.classList.add('animate-pulse');
+        label.textContent = 'Log Aktiv';
+        startSess();
+    } else {
+        btn.textContent = 'Start';
+        btn.classList.replace('bg-red-500', 'bg-red-500/20');
+        btn.classList.replace('text-white', 'text-red-500');
+        dot.classList.replace('bg-secondary', 'bg-slate-500');
+        dot.classList.remove('animate-pulse');
+        label.textContent = 'Log Inaktiv';
+        endSess();
+    }
+}
+
+function renderLog() {
+    const el = $('tripLog');
+    const trips = ldT();
+    if (!trips.length) { el.innerHTML = '<div class="text-center py-8 text-on-surface-variant text-xs italic">Keine Einträge vorhanden</div>'; return; }
+    el.innerHTML = trips.map(t => {
+        const d = new Date(t.st).toLocaleDateString('de-DE');
+        return `
+        <div class="px-4 py-2 flex justify-between items-center hover:bg-white/5 transition-colors group">
+            <div onclick="openEdit(${t.id})" class="cursor-pointer">
+                <div class="text-[10px] font-mono text-on-surface">${d}</div>
+                <div class="text-[9px] font-mono text-on-surface-variant">${t.km.toFixed(2)} km Fahrt</div>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="text-right">
+                    <div class="text-[10px] font-headline font-bold text-primary">${(t.km * 0.539957).toFixed(2)} nm</div>
+                    <div class="text-[10px] font-headline font-bold text-secondary">${(t.mx * 3.6).toFixed(1)} km/h</div>
+                </div>
+                <button onclick="delTrip(${t.id})" class="text-red-400 opacity-0 group-hover:opacity-100 p-1">
+                    <span class="material-symbols-outlined text-sm">delete</span>
+                </button>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+window.delTrip = function(id) { svT(ldT().filter(t => t.id !== id)); renderLog() };
+window.clearAllTrips = function() { if (confirm('Alle Fahrten löschen?')) { svT([]); renderLog() } };
+
+/* EDIT TRIP */
+window.openEdit = function(id) {
+    const trips = ldT(); const t = trips.find(x => x.id === id); if (!t) return;
+    $('edKm').value = t.km.toFixed(3); $('edMx').value = (t.mx * 3.6).toFixed(1);
+    $('edId').value = id; $('editModal').classList.add('open');
+};
+window.closeEdit = function() { $('editModal').classList.remove('open') };
+window.saveEdit = function() {
+    const id = parseInt($('edId').value); const trips = ldT(); const t = trips.find(x => x.id === id);
+    if (t) { t.km = parseFloat($('edKm').value) || 0; t.mx = (parseFloat($('edMx').value) || 0) / 3.6; svT(trips); renderLog() }
+    closeEdit();
+};
+
+/* UPDATE DISPLAY */
+function upd(c) {
+    $('vSpd').textContent = toKn(c.speed).toFixed(1);
+    $('vHdg').textContent = c.heading != null ? Math.round(c.heading) + '°' : '—';
+    $('vDir').textContent = hTxt(c.heading);
+    $('vAlt').textContent = c.altitude != null ? Math.round(c.altitude) : '—';
+    $('vLat').textContent = toDMS(c.latitude, true);
+    $('vLon').textContent = toDMS(c.longitude, false);
+    $('vDnm').textContent = (totalDist * 0.539957).toFixed(3);
+    $('vDkmTotal').textContent = totalDist.toFixed(3) + ' km Total';
+    
+    if (c.accuracy != null) {
+        const dot = $('wlDot');
+        dot.classList.toggle('bg-green-500', c.accuracy < 20);
+        dot.classList.toggle('bg-yellow-500', c.accuracy >= 20 && c.accuracy < 50);
+        dot.classList.toggle('bg-red-500', c.accuracy >= 50);
+        $('stT').textContent = `Acc: ±${Math.round(c.accuracy)}m`;
+    }
+    
+    if (leafMarker) leafMarker.setLatLng([c.latitude, c.longitude]);
+    if (leafMap && !mapPF) leafMap.panTo([c.latitude, c.longitude]);
+}
+
+/* PROCESS GPS */
+function proc(raw) {
+    const c = mode === 'live' ? sm.upd(raw) : { latitude: raw.latitude, longitude: raw.longitude, speed: raw.speed, heading: raw.heading, altitude: raw.altitude, accuracy: raw.accuracy };
+    gps = c;
+    if (recording) {
+        if (c.speed > mxS) mxS = c.speed;
+        if (prevLat != null) {
+            const d = haversine(prevLat, prevLon, c.latitude, c.longitude);
+            if (d > 0.002 && d < 0.2) totalDist += d;
+        }
+    }
+    prevLat = c.latitude; prevLon = c.longitude;
+    if (!leafMap) initMap(c.latitude, c.longitude);
+    upd(c);
+}
+
+/* MAP */
+function initMap(lat, lon) {
+    leafMap = L.map('mapDiv', { zoomControl: false, attributionControl: false }).setView([lat, lon], 16);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(leafMap);
+    leafMarker = L.circleMarker([lat, lon], { radius: 8, color: '#00daf3', fillColor: '#00daf3', fillOpacity: 0.8, weight: 2 }).addTo(leafMap);
+    leafMap.on('mousedown touchstart', () => { mapPF = true; clearTimeout(mapPT); mapPT = setTimeout(() => mapPF = false, 15000) });
+}
+function recenterMap() { mapPF = false; if (gps) leafMap.panTo([gps.latitude, gps.longitude]) }
+
+/* MENU & MODES */
+function toggleModeMenu() { $('modeMenu').classList.toggle('hidden') }
+function dGps(t) { const b = t * 0.02; return { latitude: 51.5074 + Math.sin(b * 0.7) * 0.005, longitude: -0.1278 + Math.cos(b * 0.5) * 0.005, speed: Math.abs(6 + Math.sin(b) * 4), heading: (b * 50) % 360, altitude: 142 + Math.sin(b * 0.4) * 10, accuracy: 5 } }
+
+function swM(m) {
+    if (m === mode) return;
+    if (wId) navigator.geolocation.clearWatch(wId);
+    if (dIv) clearInterval(dIv);
+    mode = m;
+    $('bL').classList.toggle('bg-primary/10', m === 'live');
+    $('bL').classList.toggle('text-primary', m === 'live');
+    $('bL').classList.toggle('border-primary/40', m === 'live');
+    $('bD').classList.toggle('bg-primary/10', m === 'demo');
+    $('bD').classList.toggle('text-primary', m === 'demo');
+    $('bD').classList.toggle('border-primary/40', m === 'demo');
+    $('demoBadge').classList.toggle('hidden', m !== 'demo');
+    
+    if (m === 'live') {
+        wId = navigator.geolocation.watchPosition(p => proc(p.coords), null, { enableHighAccuracy: true });
+    } else {
+        dT = 0; dIv = setInterval(() => { dT++; proc(dGps(dT)) }, 1000);
+    }
+    toggleModeMenu();
+}
+
+function resetInstruments() { if (confirm('Alle Statistiken zurücksetzen?')) { mxS = 0; totalDist = 0; upd(gps); } toggleModeMenu(); }
+function copyCoords() {
+    if (!gps) return;
+    const t = `${gps.latitude.toFixed(6)}, ${gps.longitude.toFixed(6)}`;
+    navigator.clipboard.writeText(t).then(() => {
+        const toast = $('copyToast'); toast.style.opacity = '1';
+        setTimeout(() => toast.style.opacity = '0', 2000);
+    });
+}
+
+/* INIT */
+window.onload = () => {
+    renderLog();
+    swM('live');
+};
+</script>
 </body></html>
